@@ -48,3 +48,4 @@ git push origin master
 * https://github.com/Knights-Robotics/FRC-Programming (Last year's github)
 * https://frc-pdr.readthedocs.io/en/latest/ (more documentation)
 * https://www.chiefdelphi.com/c/first (forum)
+* https://opencv.org/ (Open CV documentation)
