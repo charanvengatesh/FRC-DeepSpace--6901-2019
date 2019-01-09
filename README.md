@@ -1,7 +1,7 @@
 # FRC DeepSpace Team 6901 2019
 Repository for FRC team 6901 during the 2019 Season
 
-##Some basic git commands:
+## Some basic git commands:
 
 * Setting your Git username for all repositories (remove --global tag to set it for a single repository):
 ```
