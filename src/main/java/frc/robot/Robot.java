@@ -38,10 +38,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    m_oi = new OI();
-    m_driveTrain = new DifferentialDrive(new Spark(0), new Spark(9)); 
-    // chooser.addOption("My Auto", new MyAutoCommand());
-    SmartDashboard.putData("Auto mode", m_chooser);
+    m_oi = new OI(); //initializing the Operator Interface (OI) class
+    m_driveTrain = new DifferentialDrive(new Spark(0), new Spark(9));  //Creating a differential drive with the spark motors
+    SmartDashboard.putData("Auto mode", m_chooser); //Modifying smart dashboard GUI
   }
 
   /**
@@ -84,19 +83,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    //m_autonomousCommand = m_chooser.getSelected();
-
-    /*
-     * String autoSelected = SmartDashboard.getString("Auto Selector",
-     * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
-     * = new MyAutoCommand(); break; case "Default Auto": default:
-     * autonomousCommand = new ExampleCommand(); break; }
-     */
-
-    // schedule the autonomous command (example)
-    //if (m_autonomousCommand != null) {
-      //m_autonomousCommand.start();
-    //}
+    //probably not going to do autunomous this year.
   }
 
   
@@ -105,7 +92,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    //Scheduler.getInstance().run();
+    //probably not going to do autunomous this year.
   }
 
   @Override
@@ -116,7 +103,6 @@ public class Robot extends TimedRobot {
     // this line or comment it out.
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
-      System.out.println("Hi");
     }
   }
 
@@ -125,18 +111,15 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    //System.out.println("This works");
-    m_driveTrain.tankDrive(m_oi.controller.getY(Left),m_oi.controller.getY(Right));
-    //Scheduler.getInstance().run();
-
-  }
+    m_driveTrain.arcadeDrive(m_oi.controller.getY(Left),m_oi.controller.getX(Right)); //arcade drive controlled by the XBOX controller
+    }
 
   /**
    * This function is called periodically during test mode.
    */
   @Override
   public void testPeriodic() {
-    //System.out.println("This works");
+    //test code
     m_driveTrain.arcadeDrive(m_oi.controller.getY(Left),m_oi.controller.getX(Right));
     
 
