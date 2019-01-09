@@ -40,3 +40,11 @@ git push origin master
 * Learn how to setup Vision and OpenCV.
 * Learn how to integrate sensors.
 * Learn how to use the PID controller system.
+
+## Resources:
+
+* https://wpilib.screenstepslive.com/s/currentCS/m/java (provides setup information and some documentation)
+* http://first.wpi.edu/FRC/roborio/release/docs/java/ (official documentation)
+* https://github.com/Knights-Robotics/FRC-Programming (Last year's github)
+* https://frc-pdr.readthedocs.io/en/latest/ (more documentation)
+* https://www.chiefdelphi.com/c/first (forum)
