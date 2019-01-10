@@ -31,9 +31,21 @@ git commit -m "Message about what changes you made"
 ```
 git remote add origin remote repository URL
 ```
+* Pull changes from the remote repository **MAKE SURE TO DO THIS BEFORE PUSHING TO AVOID ERRORS**:
+```
+git pull
+```
 * Push the changes to the remote repository: 
 ```
 git push origin master
+```
+* Make new branch 
+```
+git branch branchname
+```
+* Move to new branch 
+```
+git checkout branchname
 ```
 
 ## TODO: 
