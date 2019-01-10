@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.Victor;
+import edu.wpi.first.wpilibj.Ultrasonic;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -28,6 +30,10 @@ public class Robot extends TimedRobot {
   private static final Hand Left = Hand.kLeft;
   public static OI m_oi;
   public static DifferentialDrive m_driveTrain;
+  public static Victor intake1;
+  public static Victor intake2;
+  public static Ultrasonic  ultra;
+  public double intakePower; 
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -39,8 +45,12 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_oi = new OI(); //initializing the Operator Interface (OI) class
-    m_driveTrain = new DifferentialDrive(new Spark(0), new Spark(9));  //Creating a differential drive with the spark motors
+    m_driveTrain = new DifferentialDrive(new Spark(RobotMap.sparkLeft), new Spark(RobotMap.sparkRight));  //Creating a differential drive with the spark motors
     SmartDashboard.putData("Auto mode", m_chooser); //Modifying smart dashboard GUI
+    intake1 = new Victor(RobotMap.Victor1);
+    ultra = new Ultrasonic(1,1); 
+    ultra.setAutomaticMode(true);
+    //intake2 = new Victor(RobotMap.Victor2);
   }
 
   /**
@@ -119,8 +129,27 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
-    //test code
-    m_driveTrain.arcadeDrive(m_oi.controller.getY(Left),m_oi.controller.getX(Right));
+    //test drive train code
+    //m_driveTrain.arcadeDrive(.6,.6);
+    
+    //testing intake code
+    if (ultra.getRangeInches()<=5){
+      intakePower = 0;
+    }
+    else{
+      intakePower = .3;
+    }
+    
+
+		//if (Math.abs(m_oi.controller.getY(Left)) > 0.6) { // Change the value if too fast
+			//intakePower = m_oi.controller.getY(Left) - 0.4;
+		//} else {
+		//	intakePower = m_oi.controller.getY(Left);
+		//}
+
+		intake1.set(intakePower);
+		//intake2.set(-intakePower);
+
     
 
   }
