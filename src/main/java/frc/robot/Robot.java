@@ -132,7 +132,7 @@ public class Robot extends TimedRobot {
     //test drive train code
     //m_driveTrain.arcadeDrive(.6,.6);
     
-    //testing intake code
+    //testing intake code with ultrasonic
     if (ultra.getRangeInches()<=5){
       intakePower = 0;
     }
@@ -140,13 +140,6 @@ public class Robot extends TimedRobot {
       intakePower = .3;
     }
     
-
-		//if (Math.abs(m_oi.controller.getY(Left)) > 0.6) { // Change the value if too fast
-			//intakePower = m_oi.controller.getY(Left) - 0.4;
-		//} else {
-		//	intakePower = m_oi.controller.getY(Left);
-		//}
-
 		intake1.set(intakePower);
 		//intake2.set(-intakePower);
 
