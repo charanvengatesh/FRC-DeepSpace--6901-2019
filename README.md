@@ -27,8 +27,9 @@ File (Top left corner) > Open Folder
 6. You should be able to look at the robot's code now.
 ## When running the program...
 1. Connect the ethernet wire to robot
+2. See if the driver station lights are green for everything except the joystick (unless you have one hooked up).
 2. Deploy robot code
-3. __**MAKE SURE TO SELECT TEST MODE **__
+3. **MAKE SURE TO SELECT TEST MODE**
 4. When you are ready to run, select the enabled button
 
 ## Some basic git commands
