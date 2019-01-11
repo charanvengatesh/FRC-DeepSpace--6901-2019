@@ -9,10 +9,10 @@ Repository for FRC team 6901 during the 2019 Deep Space Season.
 6. [Resources](https://github.com/Knights-Robotics/FRC-DeepSpace--6901-2019/blob/master/README.md#resources)
 
 ## Configuring Materials
-* [To get the visual studio IDE to run/write programs](https://wpilib.screenstepslive.com/s/currentCS/m/java/l/1027503-installing-c-and-java-development-tools-for-frc)
-* [To download the National instruments update suite(**REQUIRED IN ORDER TO RUN PROGRAMS**)](https://wpilib.screenstepslive.com/s/currentCS/m/java/l/1027504-installing-the-frc-update-suite-all-languages) 
-* [To build and deploy robot code for testing](https://wpilib.screenstepslive.com/s/currentCS/m/java/l/1027063-building-and-deploying-to-a-roborio)
-* [To use git to change the remote repository](https://git-scm.com/downloads)
+* [Get the visual studio IDE to write and run robot programs](https://wpilib.screenstepslive.com/s/currentCS/m/java/l/1027503-installing-c-and-java-development-tools-for-frc)
+* [Download the National instruments update suite(**REQUIRED IN ORDER TO RUN PROGRAMS**)](https://wpilib.screenstepslive.com/s/currentCS/m/java/l/1027504-installing-the-frc-update-suite-all-languages) 
+* [Building and deploying robot code for testing](https://wpilib.screenstepslive.com/s/currentCS/m/java/l/1027063-building-and-deploying-to-a-roborio)
+* [Using git to change the remote repository](https://git-scm.com/downloads)
 ## Opening the program
 1. Clone/download this repository
 2. Extract the zip file (**REMEMBER IT'S LOCATION**)
