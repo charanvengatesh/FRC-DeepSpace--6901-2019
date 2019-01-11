@@ -1,6 +1,20 @@
 # FRC DeepSpace Team 6901 2019
 Repository for FRC team 6901 during the 2019 Season
 
+## Configuring Materials
+* To get the visual studio IDE to run/write programs:
+  * https://wpilib.screenstepslive.com/s/currentCS/m/java/l/1027503-installing-c-and-java-development-tools-for-frc
+* To download the National instruments update suite **REQUIRED IN ORDER TO RUN PROGRAMS**:
+  * https://wpilib.screenstepslive.com/s/currentCS/m/java/l/1027504-installing-the-frc-update-suite-all-languages 
+* To build and deploy robot code for testing:
+  * https://wpilib.screenstepslive.com/s/currentCS/m/java/l/1027063-building-and-deploying-to-a-roborio
+
+## When running the program...
+1. Connect the ethernet wire to robot
+2. Deploy robot code
+3. __**MAKE SURE TO SELECT TEST MODE **__
+4. When you are ready to run, select the enabled button
+
 ## Some basic git commands:
 
 * Setting your Git username for all repositories (remove --global tag to set it for a single repository):
@@ -49,6 +63,7 @@ git checkout branchname
 ```
 
 ## TODO: 
+* Make the README more professional after everyone learns how to use the programs.
 * Learn how to setup Vision and OpenCV.
 * Learn how to integrate sensors.
 * Learn how to use the PID controller system.
