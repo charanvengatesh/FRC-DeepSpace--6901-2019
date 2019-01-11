@@ -1,5 +1,5 @@
 # FRC DeepSpace Team 6901 2019
-Repository for FRC team 6901 during the 2019 Season
+Repository for FRC team 6901 during the 2019 Deep Space Season.
 ## Table of contents:
 1. [Configuring Materials](https://github.com/Knights-Robotics/FRC-DeepSpace--6901-2019/blob/master/README.md#configuring-materials)
 2. [Opening the Program](https://github.com/Knights-Robotics/FRC-DeepSpace--6901-2019/blob/master/README.md#opening-the-program) 
@@ -70,18 +70,18 @@ git pull
 ```
 git push origin master
 ```
-* Make new branch 
+* Make a new branch 
 ```
 git branch branchname
 ```
-* Move to new branch 
+* Move to the new branch 
 ```
 git checkout branchname
 ```
 
 ## TODO
 * Make the README more professional after everyone learns how to use the programs.
-* Learn how to setup Vision and OpenCV.
+* Learn how to set up Vision and OpenCV.
 * Learn how to integrate sensors.
 * Learn how to use the PID controller system.
 
@@ -90,8 +90,10 @@ git checkout branchname
 * [Information and strategies for programming](https://wpilib.screenstepslive.com/s/currentCS/m/java)
 * [Official WPILIB documentation](http://first.wpi.edu/FRC/roborio/release/docs/java/)
 * [Last Year's Github](https://github.com/Knights-Robotics/FRC-Programming)
-* [Easier to read documentation (may have less content)](https://frc-pdr.readthedocs.io/en/latest/)
+* [More documentation/tips (may have less content)](https://frc-pdr.readthedocs.io/en/latest/)
 * [FRC Forum](https://www.chiefdelphi.com/c/first)
 * [Open CV Documentation (probably won't need it)](https://opencv.org/)
+* [GIT documentation] (https://git-scm.com/doc)
+* [GIT tutorial] (https://www.atlassian.com/git/tutorials/syncing)
 * **TEXT ONLY PLEASE:** 469-678-0333
 * **EMAIL:** mateus.sakata@gmail.com 
