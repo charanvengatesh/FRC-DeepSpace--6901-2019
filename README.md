@@ -1,5 +1,6 @@
 # FRC DeepSpace Team 6901 2019
 Repository for FRC team 6901 during the 2019 Deep Space Season.
+**NOTE:** please *DON'T* change any code unless you have gotten the robot to successfully run the test code.
 ## Table of contents:
 1. [Configuring Materials](https://github.com/Knights-Robotics/FRC-DeepSpace--6901-2019/blob/master/README.md#configuring-materials)
 2. [Opening the Program](https://github.com/Knights-Robotics/FRC-DeepSpace--6901-2019/blob/master/README.md#opening-the-program) 
