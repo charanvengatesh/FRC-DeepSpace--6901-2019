@@ -22,9 +22,9 @@ Repository for FRC team 6901 during the 2019 Season
 File (Top left corner) > Open Folder   
 ```
 4. When the file explorer menu pops up, *double click* on the folder that you extracted the Zip file's contents to.
- * You should see a single folder
-5. **CLICK ONCE** on the folder (should have the same name as this repository) and press select folder.
-6. You should be able to look at the robot's code now.
+  * *CheckPoint:* You should now see a single folder.
+5. **CLICK ONCE** on the folder (*should have the same name as this repository*) and press select folder.
+6. Visual Studio should now be able to display the robot code.
 ## When running the program...
 1. Connect the ethernet wire to robot
 2. See if the driver station lights are green for everything except the joystick (unless you have one hooked up).
