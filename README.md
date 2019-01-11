@@ -2,10 +2,11 @@
 Repository for FRC team 6901 during the 2019 Season
 ## Table of contents:
 1. Configuring Materials
-2. Running the program
-3. Git commands
-4. To-do list
-5. Resources
+2. Opening the program
+3. Running the program
+4. Git commands
+5. To-do list
+6. Resources
 
 ## Configuring Materials
 * To get the visual studio IDE to run/write programs:
@@ -18,8 +19,8 @@ Repository for FRC team 6901 during the 2019 Season
   * https://git-scm.com/downloads
 ## Opening the program
 1. Clone/download this repository
-2. Extract the zip file **Remember it's location**
-2. Go onto the FRC 2019 Visual Studio app
+2. Extract the zip file (**REMEMBER IT'S LOCATION**)
+2. Open the *FRC 2019 Visual Studio*
 3. Go to:
 ```
 File (Top left corner) > Open Folder   
