@@ -93,7 +93,7 @@ git checkout branchname
 * [More documentation/tips (may have less content)](https://frc-pdr.readthedocs.io/en/latest/)
 * [FRC Forum](https://www.chiefdelphi.com/c/first)
 * [Open CV Documentation (probably won't need it)](https://opencv.org/)
-* [GIT documentation] (https://git-scm.com/doc)
-* [GIT tutorial] (https://www.atlassian.com/git/tutorials/syncing)
+* [GIT documentation](https://git-scm.com/doc)
+* [GIT tutorial](https://www.atlassian.com/git/tutorials/syncing)
 * **TEXT ONLY PLEASE:** 469-678-0333
 * **EMAIL:** mateus.sakata@gmail.com 
