@@ -10,7 +10,7 @@ Repository for FRC team 6901 during the 2019 Season
 
 ## Configuring Materials
 * [To get the visual studio IDE to run/write programs](https://wpilib.screenstepslive.com/s/currentCS/m/java/l/1027503-installing-c-and-java-development-tools-for-frc)
-* [To download the National instruments update suite **REQUIRED IN ORDER TO RUN PROGRAMS**](https://wpilib.screenstepslive.com/s/currentCS/m/java/l/1027504-installing-the-frc-update-suite-all-languages) 
+* [To download the National instruments update suite(**REQUIRED IN ORDER TO RUN PROGRAMS**)](https://wpilib.screenstepslive.com/s/currentCS/m/java/l/1027504-installing-the-frc-update-suite-all-languages) 
 * [To build and deploy robot code for testing](https://wpilib.screenstepslive.com/s/currentCS/m/java/l/1027063-building-and-deploying-to-a-roborio)
 * [To use git to change the remote repository](https://git-scm.com/downloads)
 ## Opening the program
