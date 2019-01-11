@@ -23,7 +23,7 @@ public class RobotMap {
   public static int sparkLeft = 0; //Left Spark motor port
   public static int sparkRight = 9; //Right Spark motor port
 
-  //Victor motors
+  //Victor motors (intakes)
   public static int Victor1 = 1;
   public static int Victor2 = 2;
 }

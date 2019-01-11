@@ -8,7 +8,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.GenericHID.Hand; //ignore any green squiggly underlines
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -26,8 +26,8 @@ import edu.wpi.first.wpilibj.Ultrasonic;
  * project.
  */
 public class Robot extends TimedRobot {
-  private static final Hand Right = Hand.kRight;
-  private static final Hand Left = Hand.kLeft;
+  //private static final Hand Right = Hand.kRight; //Lefthand Side for controller
+  //private static final Hand Left = Hand.kLeft; //Righthand side for controller
   public static OI m_oi;
   public static DifferentialDrive m_driveTrain;
   public static Victor intake1;
@@ -44,13 +44,21 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    
     m_oi = new OI(); //initializing the Operator Interface (OI) class
+    //drive train initialization:
     m_driveTrain = new DifferentialDrive(new Spark(RobotMap.sparkLeft), new Spark(RobotMap.sparkRight));  //Creating a differential drive with the spark motors
+    
     SmartDashboard.putData("Auto mode", m_chooser); //Modifying smart dashboard GUI
-    intake1 = new Victor(RobotMap.Victor1);
-    ultra = new Ultrasonic(1,1); 
-    ultra.setAutomaticMode(true);
-    //intake2 = new Victor(RobotMap.Victor2);
+    
+    //intake initialization:
+    //intake1 = new Victor(RobotMap.Victor1); //Intake motor 1
+    //intake2 = new Victor(RobotMap.Victor2); //Intake motor 2
+    
+    //ultrasonic initialization:
+    //ultra = new Ultrasonic(1,1); 
+    //ultra.setAutomaticMode(true);
+
   }
 
   /**
@@ -93,12 +101,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    //probably not going to do autunomous this year.
+    //probably not going to do autunomous this year, leave this blank.
   }
 
   
   /**
-   * This function is called periodically during autonomous.
+   * This function is called periodically during autonomous, leave this blank.
    */
   @Override
   public void autonomousPeriodic() {
@@ -121,26 +129,23 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    m_driveTrain.arcadeDrive(m_oi.controller.getY(Left),m_oi.controller.getX(Right)); //arcade drive controlled by the XBOX controller
+    //m_driveTrain.arcadeDrive(m_oi.controller.getY(Left),m_oi.controller.getX(Right)); //arcade drive controlled by the XBOX controller
     }
 
   /**
    * This function is called periodically during test mode.
+   * Currently just use this function whenever we test the robot.
    */
   @Override
   public void testPeriodic() {
-    //test drive train code
-    //m_driveTrain.arcadeDrive(.6,.6);
+    //test to see if you can run programs on the robot:
+    m_driveTrain.tankDrive(.5,.5);
+    //test drive train code with controller
+    //m_driveTrain.arcadeDrive(m_oi.controller.getY(Left),m_oi.controller.getX(Right));
     
-    //testing intake code with ultrasonic
-    if (ultra.getRangeInches()<=5){
-      intakePower = 0;
-    }
-    else{
-      intakePower = .3;
-    }
-    
-		intake1.set(intakePower);
+    //uncomment lines 147-149 to test intake motors here
+    //intakePower = .4; //DO NOT SET OVER .6!!!
+		//intake1.set(intakePower);
 		//intake2.set(-intakePower);
 
     

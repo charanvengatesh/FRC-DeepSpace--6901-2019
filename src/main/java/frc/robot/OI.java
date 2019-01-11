@@ -21,7 +21,8 @@ public class OI {
   XboxController controller = new XboxController(0);
   
   public OI(){
-    //TODO we can bind xbox buttons to commands here
+    //we can bind xbox buttons to commands here
+    
 
     
   }
