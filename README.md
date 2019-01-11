@@ -1,22 +1,18 @@
 # FRC DeepSpace Team 6901 2019
 Repository for FRC team 6901 during the 2019 Season
 ## Table of contents:
-1. Configuring Materials
-2. Opening the program
-3. Running the program
-4. Git commands
-5. To-do list
-6. Resources
+1. [Configuring Materials](https://github.com/Knights-Robotics/FRC-DeepSpace--6901-2019/blob/master/README.md#configuring-materials)
+2. [Opening the Program](https://github.com/Knights-Robotics/FRC-DeepSpace--6901-2019/blob/master/README.md#opening-the-program) 
+3. [Running the program](https://github.com/Knights-Robotics/FRC-DeepSpace--6901-2019/blob/master/README.md#when-running-the-program)
+4. [Git commands](https://github.com/Knights-Robotics/FRC-DeepSpace--6901-2019/blob/master/README.md#some-basic-git-commands)
+5. [To-do list](https://github.com/Knights-Robotics/FRC-DeepSpace--6901-2019/blob/master/README.md#todo)
+6. [Resources](https://github.com/Knights-Robotics/FRC-DeepSpace--6901-2019/blob/master/README.md#resources)
 
 ## Configuring Materials
-* To get the visual studio IDE to run/write programs:
-  * https://wpilib.screenstepslive.com/s/currentCS/m/java/l/1027503-installing-c-and-java-development-tools-for-frc
-* To download the National instruments update suite **REQUIRED IN ORDER TO RUN PROGRAMS**:
-  * https://wpilib.screenstepslive.com/s/currentCS/m/java/l/1027504-installing-the-frc-update-suite-all-languages 
-* To build and deploy robot code for testing:
-  * https://wpilib.screenstepslive.com/s/currentCS/m/java/l/1027063-building-and-deploying-to-a-roborio
-* To use git to change the remote repository:
-  * https://git-scm.com/downloads
+* [To get the visual studio IDE to run/write programs](https://wpilib.screenstepslive.com/s/currentCS/m/java/l/1027503-installing-c-and-java-development-tools-for-frc)
+* [To download the National instruments update suite **REQUIRED IN ORDER TO RUN PROGRAMS**](https://wpilib.screenstepslive.com/s/currentCS/m/java/l/1027504-installing-the-frc-update-suite-all-languages) 
+* [To build and deploy robot code for testing](https://wpilib.screenstepslive.com/s/currentCS/m/java/l/1027063-building-and-deploying-to-a-roborio)
+* [To use git to change the remote repository](https://git-scm.com/downloads)
 ## Opening the program
 1. Clone/download this repository
 2. Extract the zip file (**REMEMBER IT'S LOCATION**)
@@ -35,7 +31,7 @@ File (Top left corner) > Open Folder
 3. __**MAKE SURE TO SELECT TEST MODE **__
 4. When you are ready to run, select the enabled button
 
-## Some basic git commands:
+## Some basic git commands
 
 * Setting your Git username for all repositories (remove --global tag to set it for a single repository):
 ```
@@ -82,19 +78,19 @@ git branch branchname
 git checkout branchname
 ```
 
-## TODO: 
+## TODO
 * Make the README more professional after everyone learns how to use the programs.
 * Learn how to setup Vision and OpenCV.
 * Learn how to integrate sensors.
 * Learn how to use the PID controller system.
 
-## Resources:
+## Resources
 
-* https://wpilib.screenstepslive.com/s/currentCS/m/java (provides setup information and some documentation)
-* http://first.wpi.edu/FRC/roborio/release/docs/java/ (official documentation)
-* https://github.com/Knights-Robotics/FRC-Programming (Last year's github)
-* https://frc-pdr.readthedocs.io/en/latest/ (more documentation)
-* https://www.chiefdelphi.com/c/first (forum)
-* https://opencv.org/ (Open CV documentation)
+* [Information and strategies for programming](https://wpilib.screenstepslive.com/s/currentCS/m/java)
+* [Official WPILIB documentation](http://first.wpi.edu/FRC/roborio/release/docs/java/)
+* [Last Year's Github](https://github.com/Knights-Robotics/FRC-Programming)
+* [Easier to read documentation (may have less content)](https://frc-pdr.readthedocs.io/en/latest/)
+* [FRC Forum](https://www.chiefdelphi.com/c/first)
+* [Open CV Documentation (probably won't need it)](https://opencv.org/)
 * **TEXT ONLY PLEASE:** 469-678-0333
 * **EMAIL:** mateus.sakata@gmail.com 
