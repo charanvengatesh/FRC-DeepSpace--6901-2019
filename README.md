@@ -1,5 +1,11 @@
 # FRC DeepSpace Team 6901 2019
 Repository for FRC team 6901 during the 2019 Season
+## Table of contents:
+1. Configuring Materials
+2. Running the program
+3. Git commands
+4. To-do list
+5. Resources
 
 ## Configuring Materials
 * To get the visual studio IDE to run/write programs:
@@ -8,7 +14,20 @@ Repository for FRC team 6901 during the 2019 Season
   * https://wpilib.screenstepslive.com/s/currentCS/m/java/l/1027504-installing-the-frc-update-suite-all-languages 
 * To build and deploy robot code for testing:
   * https://wpilib.screenstepslive.com/s/currentCS/m/java/l/1027063-building-and-deploying-to-a-roborio
-
+* To use git to change the remote repository:
+  * https://git-scm.com/downloads
+## Opening the program
+1. Clone/download this repository
+2. Extract the zip file **Remember it's location**
+2. Go onto the FRC 2019 Visual Studio app
+3. Go to:
+```
+File (Top left corner) > Open Folder   
+```
+4. When the file explorer menu pops up, *double click* on the folder that you extracted the Zip file's contents to.
+ * You should see a single folder
+5. **CLICK ONCE** on the folder (should have the same name as this repository) and press select folder.
+6. You should be able to look at the robot's code now.
 ## When running the program...
 1. Connect the ethernet wire to robot
 2. Deploy robot code
@@ -76,3 +95,5 @@ git checkout branchname
 * https://frc-pdr.readthedocs.io/en/latest/ (more documentation)
 * https://www.chiefdelphi.com/c/first (forum)
 * https://opencv.org/ (Open CV documentation)
+* **TEXT ONLY PLEASE:** 469-678-0333
+* **EMAIL:** mateus.sakata@gmail.com 
