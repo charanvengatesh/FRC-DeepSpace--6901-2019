@@ -25,5 +25,5 @@ public class RobotMap {
 
   //Victor motors (intakes)
   public static int Victor1 = 1;
-  public static int Victor2 = 2;
+  public static int Victor3 = 3;
 }
