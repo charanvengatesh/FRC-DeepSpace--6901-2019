@@ -13,9 +13,20 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Inputs.Vision;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.Victor;
+import edu.wpi.first.networktables.*;
+
+
+
+
+
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.vision.VisionThread;
+
 //import edu.wpi.first.wpilibj.Ultrasonic;
 
 /**
@@ -30,7 +41,7 @@ public class Robot extends TimedRobot {
   private static final Hand Right = Hand.kRight; //Lefthand Side for controller
   private static final Hand Left = Hand.kLeft; //Righthand side for controller
   public static OI m_oi;
-  
+ 
   //Motors:
   public static DifferentialDrive m_driveTrain;
   public static Victor intake1;
@@ -39,7 +50,12 @@ public class Robot extends TimedRobot {
   //Sensors and variables:
   //public static Ultrasonic  ultra;
   public double intakePower; 
-
+  public double[] controllerValues;
+  public double speedFactor;
+  public VisionThread visionThread;
+  public NetworkTable table;
+   
+  
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
@@ -53,16 +69,22 @@ public class Robot extends TimedRobot {
     m_oi = new OI(); //initializing the Operator Interface (OI) class
     //drive train initialization:
     m_driveTrain = new DifferentialDrive(new Spark(RobotMap.sparkLeft), new Spark(RobotMap.sparkRight));  //Creating a differential drive with the spark motors
+    UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
+    NetworkTableInstance inst = NetworkTableInstance.getDefault();
+    table = inst.getTable("myContoursReport");
+    System.out.println(table.getEntry("centerX"));
     
-    SmartDashboard.putData("Auto mode", m_chooser); //Modifying smart dashboard GUI
+
+
     
     //intake initialization:
     intake1 = new Victor(RobotMap.Victor1); //Intake motor 1
     intake3 = new Victor(RobotMap.Victor3); //Intake motor 2
-    
     //ultrasonic initialization:
     //ultra = new Ultrasonic(1,1); 
     //ultra.setAutomaticMode(true);
+     controllerValues = new double[4];
+     
 
   }
 
@@ -86,6 +108,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
+    
   }
 
   @Override
@@ -146,25 +169,44 @@ public class Robot extends TimedRobot {
     //test to see if you can run programs on the robot:
     //m_driveTrain.tankDrive(.5,.5);
     //test drive train code with controller
-    m_driveTrain.arcadeDrive(m_oi.controller.getY(Left),m_oi.controller.getX(Right));
     
+    //m_driveTrain.tankDrive(m_oi.controller.getY(),m_oi.controller.getTwist());
+    
+    //controllerValues[1] = m_oi.controller.getY(Left);
+    //controllerValues[2] = m_oi.controller.getTriggerAxis(Right);
+    //controllerValues[3] = m_oi.controller.getTriggerAxis(Left);
+    //System.out.println(Arrays.toString(controllerValues));
+    //speedFactor = .75;
+    //.if(m_oi.controller.getTriggerAxis(Left)>0){
+     // speedFactor = .5;
+   // }
+   // else if(m_oi.controller.getTriggerAxis(Right)>0){
+    //  speedFactor = 1.25;
+    //}
+    m_driveTrain.tankDrive(m_oi.controller.getY(Right), m_oi.controller.getY(Left));
+    
+    
+
     //uncomment lines 147-149 to test intake motors here
     //intakePower = 0.5; //DO NOT SET OVER .6!!!
-    if (m_oi.controller.getAButton()){
-      intakePower = 0.2; //Pulls in with A
-    }
-    else if (m_oi.controller.getBButton()){
-      intakePower = -0.2; //Spits out with B
-    }
-    else if (
-      !m_oi.controller.getAButton() || !m_oi.controller.getBButton()){
-      intakePower=0; //Otherwise it doesn't do anything
-    }
+    //if (m_oi.controller.getAButton()){
+      //intakePower = 0.3; //Pulls in with A
+   // }
+    //else if (m_oi.controller.getBButton()){
+     // intakePower = -0.3; //Spits out with B
+   // }
+    //else if (
+     // !m_oi.controller.getAButton() || !m_oi.controller.getBButton()){
+      //intakePower=0; //Otherwise it doesn't do anything
+    
+    
     
 
     intake3.set(-intakePower);
     intake1.set(intakePower);
-    
+
+    System.out.println(table.getEntry("centerX"));
+
       
 
   }
