@@ -13,8 +13,10 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.Victor;
 //import edu.wpi.first.wpilibj.Ultrasonic;
 
@@ -30,7 +32,7 @@ public class Robot extends TimedRobot {
   private static final Hand Right = Hand.kRight; //Lefthand Side for controller
   private static final Hand Left = Hand.kLeft; //Righthand side for controller
   public static OI m_oi;
-  
+  public Gyro gyro;
   //Motors:
   public static DifferentialDrive m_driveTrain;
   public static Victor intake1;
@@ -59,11 +61,11 @@ public class Robot extends TimedRobot {
     //intake initialization:
     intake1 = new Victor(RobotMap.Victor1); //Intake motor 1
     intake3 = new Victor(RobotMap.Victor3); //Intake motor 2
-    
+    gyro = new AnalogGyro(1);
     //ultrasonic initialization:
     //ultra = new Ultrasonic(1,1); 
     //ultra.setAutomaticMode(true);
-
+    gyro.reset();
   }
 
   /**
@@ -143,6 +145,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+    
+    System.out.println(gyro.getAngle());
     //test to see if you can run programs on the robot:
     //m_driveTrain.tankDrive(.5,.5);
     //test drive train code with controller
