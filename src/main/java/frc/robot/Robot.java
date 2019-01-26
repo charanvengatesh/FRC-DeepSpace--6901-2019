@@ -13,9 +13,11 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-//import edu.wpi.first.wpilibj.Victor;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.Victor;
 //import edu.wpi.first.wpilibj.Ultrasonic;
 
 /**
@@ -30,15 +32,15 @@ public class Robot extends TimedRobot {
   private static final Hand Right = Hand.kRight; //Lefthand Side for controller
   private static final Hand Left = Hand.kLeft; //Righthand side for controller
   public static OI m_oi;
-  
+  public Gyro gyro;
   //Motors:
   public static DifferentialDrive m_driveTrain;
-  //public static Victor intake1;
-  //public static Victor intake3;
+  public static Victor intake1;
+  public static Victor intake3;
   
   //Sensors and variables:
   //public static Ultrasonic  ultra;
-  //public double intakePower; 
+  public double intakePower; 
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -57,13 +59,13 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Auto mode", m_chooser); //Modifying smart dashboard GUI
     
     //intake initialization:
-    //intake1 = new Victor(RobotMap.Victor1); //Intake motor 1
-    //intake3 = new Victor(RobotMap.Victor3); //Intake motor 2
-    
+    intake1 = new Victor(RobotMap.Victor1); //Intake motor 1
+    intake3 = new Victor(RobotMap.Victor3); //Intake motor 2
+    gyro = new AnalogGyro(1);
     //ultrasonic initialization:
     //ultra = new Ultrasonic(1,1); 
     //ultra.setAutomaticMode(true);
-
+    gyro.reset();
   }
 
   /**
@@ -143,27 +145,29 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+    
+    System.out.println(gyro.getAngle());
     //test to see if you can run programs on the robot:
-    m_driveTrain.tankDrive(.5,.5);
+    //m_driveTrain.tankDrive(.5,.5);
     //test drive train code with controller
-    //m_driveTrain.arcadeDrive(m_oi.controller.getY(Left),m_oi.controller.getX(Right));
+    m_driveTrain.arcadeDrive(m_oi.controller.getY(Left),m_oi.controller.getX(Right));
     
     //uncomment lines 147-149 to test intake motors here
     //intakePower = 0.5; //DO NOT SET OVER .6!!!
-    //if (m_oi.controller.getAButton()){
-      //intakePower = 0.2; //Pulls in with A
-    //}
-    //else if (m_oi.controller.getBButton()){
-     // intakePower = -0.2; //Spits out with B
-    //}
-    //else if (
-     // !m_oi.controller.getAButton() || !m_oi.controller.getBButton()){
-      //intakePower=0; //Otherwise it doesn't do anything
-    //}
+    if (m_oi.controller.getAButton()){
+      intakePower = 0.2; //Pulls in with A
+    }
+    else if (m_oi.controller.getBButton()){
+      intakePower = -0.2; //Spits out with B
+    }
+    else if (
+      !m_oi.controller.getAButton() || !m_oi.controller.getBButton()){
+      intakePower=0; //Otherwise it doesn't do anything
+    }
     
 
-    //intake3.set(-intakePower);
-    //intake1.set(intakePower);
+    intake3.set(-intakePower);
+    intake1.set(intakePower);
     
       
 
