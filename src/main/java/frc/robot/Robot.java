@@ -13,20 +13,22 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Inputs.GripPipeline;
 import frc.robot.Inputs.Vision;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.networktables.*;
+import org.opencv.core.Mat;
 
+import java.util.Arrays;
 
-
-
-
+import edu.wpi.cscore.CvSink;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.vision.VisionThread;
-
+import edu.wpi.first.wpilibj.AnalogGyro;
 //import edu.wpi.first.wpilibj.Ultrasonic;
 
 /**
@@ -36,6 +38,7 @@ import edu.wpi.first.vision.VisionThread;
  * creating this project, you must also update the build.gradle file in the
  * project.
  */
+
 public class Robot extends TimedRobot {
   //Operator Interface:
   private static final Hand Right = Hand.kRight; //Lefthand Side for controller
@@ -54,29 +57,31 @@ public class Robot extends TimedRobot {
   public double speedFactor;
   public VisionThread visionThread;
   public NetworkTable table;
-   
-  
+  NetworkTableEntry xEntry;
+  public UsbCamera camera;
+  public Gyro gyro;
   Command m_autonomousCommand;
+  Command hello;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
-
+SmartDashboard dash;
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
    */
   @Override
   public void robotInit() {
+    NetworkTableInstance inst = NetworkTableInstance.getDefault();
+    table = inst.getTable("GRIP/ContourReport");
     
     m_oi = new OI(); //initializing the Operator Interface (OI) class
     //drive train initialization:
     m_driveTrain = new DifferentialDrive(new Spark(RobotMap.sparkLeft), new Spark(RobotMap.sparkRight));  //Creating a differential drive with the spark motors
     UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
-    NetworkTableInstance inst = NetworkTableInstance.getDefault();
-    table = inst.getTable("myContoursReport");
-    System.out.println(table.getEntry("centerX"));
+    UsbCamera camera01 = CameraServer.getInstance().startAutomaticCapture();
     
-
-
-    
+    m_chooser.addOption("Hi", hello);
+    gyro = new AnalogGyro(1);
+    double Kp = 0.03;
     //intake initialization:
     intake1 = new Victor(RobotMap.Victor1); //Intake motor 1
     intake3 = new Victor(RobotMap.Victor3); //Intake motor 2
@@ -114,7 +119,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     Scheduler.getInstance().run();
-  }
+  } 
 
   /**
    * This autonomous (along with the chooser code above) shows how to select
@@ -150,7 +155,9 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    
   }
+  
 
   /**
    * This function is called periodically during operator control.
@@ -158,7 +165,8 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     //m_driveTrain.arcadeDrive(m_oi.controller.getY(Left),m_oi.controller.getX(Right)); //arcade drive controlled by the XBOX controller
-    }
+    //System.out.println("hi");  
+  }
 
   /**
    * This function is called periodically during test mode.
@@ -166,6 +174,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+    gyro.reset();
+    
     //test to see if you can run programs on the robot:
     //m_driveTrain.tankDrive(.5,.5);
     //test drive train code with controller
@@ -184,8 +194,8 @@ public class Robot extends TimedRobot {
     //  speedFactor = 1.25;
     //}
     m_driveTrain.tankDrive(m_oi.controller.getY(Right), m_oi.controller.getY(Left));
-    
-    
+    System.out.println(gyro.getAngle());
+    System.out.println("hi");
 
     //uncomment lines 147-149 to test intake motors here
     //intakePower = 0.5; //DO NOT SET OVER .6!!!
@@ -202,12 +212,39 @@ public class Robot extends TimedRobot {
     
     
 
-    intake3.set(-intakePower);
-    intake1.set(intakePower);
+    //intake3.set(-intakePower);
+    //intake1.set(intakePower);
 
-    System.out.println(table.getEntry("centerX"));
+    //System.out.println(table.getEntry("centerX"));
+    //System.out.println(table.getEntry("centerY"));
+    //NetworkTableEntry centerXArray = table.getEntry("centerX");
+    //System.out.println(centerXArray);
+  //   camera = new UsbCamera("camera", "cam0");
+  //   camera.setResolution(640, 480);
+  //   CvSink cvSink = CameraServer.getInstance().getVideo();
+  //   Mat mat = new Mat();
+  // int[] things = new int[2];
+  // if (cvSink.grabFrame(mat) == 0)
+  // {
+  //   System.out.println(cvSink.getError());
+  // }
+  // else
+  // {
+  //     GripPipeline grip = new GripPipeline();
+  //     while (true)
+  //     {
+  //       grip.process(mat);
+  //       // things[0] = grip.filterContoursOutput().size();
+        
+  //       // System.out.println(grip.filterContoursOutput().size());
+  //     }
+  // }
+
+    
+ }
+
 
       
 
   }
-}
+
