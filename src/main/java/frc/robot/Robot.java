@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+//TODO organize inputs and variables & make sure the vision stuff works
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.GenericHID.Hand; //ignore any green squiggly underlines
 import edu.wpi.first.wpilibj.command.Command;
@@ -14,13 +15,16 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Inputs.GripPipeline;
-import frc.robot.Inputs.Vision;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.networktables.*;
 import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
 
 import java.util.Arrays;
 
@@ -59,17 +63,19 @@ public class Robot extends TimedRobot {
   public NetworkTable table;
   NetworkTableEntry xEntry;
   public UsbCamera camera;
-  public Gyro gyro;
+  
   Command m_autonomousCommand;
   Command hello;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
-SmartDashboard dash;
+  SmartDashboard dash;
+  public Mat mat;
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
    */
   @Override
   public void robotInit() {
+    mat = new Mat();
     NetworkTableInstance inst = NetworkTableInstance.getDefault();
     table = inst.getTable("GRIP/ContourReport");
     
@@ -80,7 +86,7 @@ SmartDashboard dash;
     UsbCamera camera01 = CameraServer.getInstance().startAutomaticCapture();
     
     m_chooser.addOption("Hi", hello);
-    gyro = new AnalogGyro(1);
+    
     double Kp = 0.03;
     //intake initialization:
     intake1 = new Victor(RobotMap.Victor1); //Intake motor 1
@@ -174,77 +180,32 @@ SmartDashboard dash;
    */
   @Override
   public void testPeriodic() {
-    gyro.reset();
     
-    //test to see if you can run programs on the robot:
-    //m_driveTrain.tankDrive(.5,.5);
-    //test drive train code with controller
     
-    //m_driveTrain.tankDrive(m_oi.controller.getY(),m_oi.controller.getTwist());
-    
-    //controllerValues[1] = m_oi.controller.getY(Left);
-    //controllerValues[2] = m_oi.controller.getTriggerAxis(Right);
-    //controllerValues[3] = m_oi.controller.getTriggerAxis(Left);
-    //System.out.println(Arrays.toString(controllerValues));
-    //speedFactor = .75;
-    //.if(m_oi.controller.getTriggerAxis(Left)>0){
-     // speedFactor = .5;
-   // }
-   // else if(m_oi.controller.getTriggerAxis(Right)>0){
-    //  speedFactor = 1.25;
-    //}
-    m_driveTrain.tankDrive(m_oi.controller.getY(Right), m_oi.controller.getY(Left));
-    System.out.println(gyro.getAngle());
-    System.out.println("hi");
+  camera = new UsbCamera("camera","cam0");
+  CvSink cvSink = CameraServer.getInstance().getVideo();
+  
+  if (cvSink.grabFrame(mat,30) == 0)
+    	{
+    		System.out.println(cvSink.getError());
+    	}
+    	else
+    	{
 
-    //uncomment lines 147-149 to test intake motors here
-    //intakePower = 0.5; //DO NOT SET OVER .6!!!
-    //if (m_oi.controller.getAButton()){
-      //intakePower = 0.3; //Pulls in with A
-   // }
-    //else if (m_oi.controller.getBButton()){
-     // intakePower = -0.3; //Spits out with B
-   // }
-    //else if (
-     // !m_oi.controller.getAButton() || !m_oi.controller.getBButton()){
-      //intakePower=0; //Otherwise it doesn't do anything
-    
-    
-    
-
-    //intake3.set(-intakePower);
-    //intake1.set(intakePower);
-
-    //System.out.println(table.getEntry("centerX"));
-    //System.out.println(table.getEntry("centerY"));
-    //NetworkTableEntry centerXArray = table.getEntry("centerX");
-    //System.out.println(centerXArray);
-  //   camera = new UsbCamera("camera", "cam0");
-  //   camera.setResolution(640, 480);
-  //   CvSink cvSink = CameraServer.getInstance().getVideo();
-  //   Mat mat = new Mat();
-  // int[] things = new int[2];
-  // if (cvSink.grabFrame(mat) == 0)
-  // {
-  //   System.out.println(cvSink.getError());
-  // }
-  // else
-  // {
-  //     GripPipeline grip = new GripPipeline();
-  //     while (true)
-  //     {
-  //       grip.process(mat);
-  //       // things[0] = grip.filterContoursOutput().size();
-        
-  //       // System.out.println(grip.filterContoursOutput().size());
-  //     }
-  // }
-
-    
+        	GripPipeline grip = new GripPipeline();
+        	
+        	
+            //System.out.println("running vision");
+				grip.process(mat);
+				//Thread.sleep(1000);
+				//System.out.println("runnig");
+				//System.out.println(grip.filterContoursOutput().get(0).size());
+				if (!(grip.filterContoursOutput().isEmpty())){
+					//System.out.println("hi");
+					Rect r = Imgproc.boundingRect(grip.filterContoursOutput().get(0));			
+					System.out.println(r.x + r.width/2);
+					}
+      }			
  }
-
-
-      
-
-  }
+}
 
