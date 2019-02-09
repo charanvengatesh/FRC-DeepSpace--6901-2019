@@ -6,8 +6,8 @@
 /*----------------------------------------------------------------------------*/
 
 package frc.robot;
-
 import edu.wpi.first.wpilibj.XboxController;
+
 
 
 
@@ -18,8 +18,10 @@ import edu.wpi.first.wpilibj.XboxController;
 public class OI {
   
   //Creates an Xbox Controller object
-  XboxController controller = new XboxController(0);
-  
+  XboxController controller1 = new XboxController(RobotMap.Xbox1);
+  XboxController controller2 = new XboxController(RobotMap.Xbox2);
+  //Joystick controller = new Joystick(0);
+
   public OI(){
     //we can bind xbox buttons to commands here
     
