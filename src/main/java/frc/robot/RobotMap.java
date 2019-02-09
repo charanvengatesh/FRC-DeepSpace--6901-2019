@@ -23,8 +23,18 @@ public class RobotMap {
   public static int sparkRight = 9; //Right Spark motor port
 
   //Victor motors (intakes)
-  public static int Victor1 = 1;
-  public static int Victor3 = 3;
+  public static int intake1 = 1;
+  public static int intake2 = 3;
+  //Arm motors
+  public static int arm1 = 1; 
+  public static int arm2 = 2;
+  public static int wrist = 0;
+  //Xbox Controlller Ports
+  public static int Xbox1 = 0;
+  public static int Xbox2 = 0;
+  //limit switch
+  public static int limitSwitch1 = 0;
+  public static int limitSwitch2 = 0;
 
 
 }

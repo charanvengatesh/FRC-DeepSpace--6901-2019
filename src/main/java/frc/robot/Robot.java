@@ -6,34 +6,41 @@
 /*----------------------------------------------------------------------------*/
 
 package frc.robot;
-
+import frc.robot.subsystems.VisionAlgorithm;
 //TODO organize inputs and variables & make sure the vision stuff works
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.GenericHID.Hand; //ignore any green squiggly underlines
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Inputs.GripPipeline;
+import frc.robot.subsystems.VisionAlgorithm;
 import edu.wpi.first.wpilibj.Spark;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
+//import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
-import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.networktables.*;
 import org.opencv.core.Mat;
-import org.opencv.core.Point;
 import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
-import java.util.Arrays;
-
 import edu.wpi.cscore.CvSink;
+import edu.wpi.cscore.CvSource;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.vision.VisionThread;
-import edu.wpi.first.wpilibj.AnalogGyro;
+//import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.DigitalInput;
 //import edu.wpi.first.wpilibj.Ultrasonic;
+//imports for the talon and stuff
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
+import com.ctre.phoenix.motorcontrol.can.*;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -51,51 +58,101 @@ public class Robot extends TimedRobot {
  
   //Motors:
   public static DifferentialDrive m_driveTrain;
-  public static Victor intake1;
-  public static Victor intake3;
+  public static SpeedControllerGroup leftSide;
+  public static SpeedControllerGroup rightSide;
+  public static Spark intake1;
+  public static Spark intake2;
+  public static VictorSPX armMotorSlave;
+  public static WPI_TalonSRX armMotorMaster;
+  public static TalonSRX wristMotor;
+  
   
   //Sensors and variables:
-  //public static Ultrasonic  ultra;
   public double intakePower; 
+  public double thing;
   public double[] controllerValues;
   public double speedFactor;
   public VisionThread visionThread;
   public NetworkTable table;
   NetworkTableEntry xEntry;
   public UsbCamera camera;
+  public DigitalInput limitSwitch1;
+  public DigitalInput limitSwitch2;
   
   Command m_autonomousCommand;
   Command hello;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
   SmartDashboard dash;
   public Mat mat;
+  public double previousRight;
+  public double previousLeft;
+  public CvSink cvSink;
+  public GripPipeline grip;
+  public Timer  timer;
+
+
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
    */
   @Override
   public void robotInit() {
-    mat = new Mat();
-    NetworkTableInstance inst = NetworkTableInstance.getDefault();
-    table = inst.getTable("GRIP/ContourReport");
-    
     m_oi = new OI(); //initializing the Operator Interface (OI) class
     //drive train initialization:
     m_driveTrain = new DifferentialDrive(new Spark(RobotMap.sparkLeft), new Spark(RobotMap.sparkRight));  //Creating a differential drive with the spark motors
     UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
-    UsbCamera camera01 = CameraServer.getInstance().startAutomaticCapture();
+    //UsbCamera camera01 = CameraServer.getInstance().startAutomaticCapture();
     
     m_chooser.addOption("Hi", hello);
-    
-    double Kp = 0.03;
+    previousLeft =0.4;
+    previousRight=0.4;
     //intake initialization:
-    intake1 = new Victor(RobotMap.Victor1); //Intake motor 1
-    intake3 = new Victor(RobotMap.Victor3); //Intake motor 2
-    //ultrasonic initialization:
+    // intake1 = new Spark(RobotMap.intake1); //Intake motor 1
+    // intake2 = new Spark(RobotMap.intake2); //Intake motor 2
+    // //ultrasonic initialization:
     //ultra = new Ultrasonic(1,1); 
     //ultra.setAutomaticMode(true);
-     controllerValues = new double[4];
-     
+
+    armMotorSlave = new VictorSPX(RobotMap.arm2);		// Follower MC, Could be a victor
+    armMotorMaster = new WPI_TalonSRX(RobotMap.arm1);		// Master MC, Talon SRX for Mag Encoder
+    // wristMotor = new TalonSRX(RobotMap.wrist); //creates an SRX for the robot wrist
+    // limitSwitch1 = new DigitalInput(RobotMap.limitSwitch1);
+    // limitSwitch2 = new DigitalInput(RobotMap.limitSwitch2);
+    mat = new Mat();
+    //  new Thread(() -> {
+    //   //camera = CameraServer.getInstance().startAutomaticCapture();
+    //   camera.setResolution(640, 480);
+
+    //   CvSink cvSink = CameraServer.getInstance().getVideo();
+    //   CvSource outputStream = CameraServer.getInstance().putVideo("Processed", 640, 480);
+
+    //   Mat source = new Mat();
+    //   Mat output = new Mat();
+
+    //   while(!Thread.interrupted()) {
+    //       cvSink.grabFrame(source);
+    //       GripPipeline cam = new GripPipeline();
+    //       cam.process(source);
+    //       outputStream.putFrame(output);
+    //   }
+    // }).start();
+  // //resets arm motors
+    timer = new Timer();
+    armMotorMaster.configFactoryDefault();
+    armMotorSlave.configFactoryDefault();
+    // wristMotor.configFactoryDefault();
+    armMotorSlave.follow(armMotorMaster);
+    armMotorMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 1);
+    armMotorMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
+    armMotorMaster.setSelectedSensorPosition(0);
+    // wristMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
+    armMotorMaster.config_kP(0,3);
+    armMotorMaster.config_kI(0,.006);
+    armMotorMaster.config_kD(0, .1);
+    armMotorMaster.config_kF(0, 5);
+     armMotorMaster.configMotionAcceleration(60);
+     armMotorMaster.configMotionCruiseVelocity(200);
+    
 
   }
 
@@ -140,7 +197,13 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    //probably not going to do autunomous this year, leave this blank.
+    armMotorMaster.setSelectedSensorPosition(0);
+  
+    // thing = 0;  
+    // camera = new UsbCamera("camera","cam0");
+    // camera.setResolution(640, 480);
+    //  cvSink = CameraServer.getInstance().getVideo();
+    // grip = new GripPipeline();  //probably not going to do autunomous this year, leave this blank.
   }
 
   
@@ -150,10 +213,18 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     //probably not going to do autunomous this year.
+    //System.out.println(armMotorMaster.getSelectedSensorPosition(0));
+    //armMotorMaster.set(ControlMode.MotionMagic, 1850);
+    
+    //armMotorMaster.set(ControlMode.MotionMagic,4250);
+    //double stuff = armMotorMaster.getSelectedSensorPosition(0);
+    //armMotorMaster.set(ControlMode.MotionMagic,1850+2400);
+    //armMotorMaster.set(ControlMode.MotionMagic,1850+2400+2000);
   }
-
+    
   @Override
   public void teleopInit() {
+    armMotorMaster.setSelectedSensorPosition(0);
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -170,42 +241,76 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    //m_driveTrain.arcadeDrive(m_oi.controller.getY(Left),m_oi.controller.getX(Right)); //arcade drive controlled by the XBOX controller
-    //System.out.println("hi");  
+    System.out.println(armMotorMaster.getSelectedSensorPosition(0));
+    //armMotorMaster.set(ControlMode.PercentOutput, m_oi.controller2.getY(Left));
+    if (m_oi.controller2.getAButton()){
+      armMotorMaster.set(ControlMode.MotionMagic,-1850);
+    }
+    else if(m_oi.controller2.getBButton()){
+      armMotorMaster.set(ControlMode.MotionMagic,-4400);
+    }
+    else if (m_oi.controller2.getYButton()) {
+      //make it move up 3 roatations
+      armMotorMaster.set(ControlMode.MotionMagic,-5750);
+    }
+    else if (m_oi.controller2.getXButton()){
+      armMotorMaster.set(ControlMode.MotionMagic,0);
+    }
+    else if (m_oi.controller2.getPOV()==180){
+      armMotorMaster.set(ControlMode.MotionMagic,-1000);
+    }
+    else if(m_oi.controller2.getPOV()==270){
+      armMotorMaster.set(ControlMode.MotionMagic,-3500);
+    }
+    else if (m_oi.controller2.getPOV()==0) {
+      //make it move up 3 roatations
+      armMotorMaster.set(ControlMode.MotionMagic,-5500);
+    }
+    else if (m_oi.controller2.getPOV()==90){
+      armMotorMaster.set(ControlMode.MotionMagic,0);
+    }
+    else {
+      armMotorMaster.set(ControlMode.PercentOutput,m_oi.controller2.getY(Left));
+    }  //System.out.println("hi");  
   }
 
   /**
    * This function is called periodically during test mode.
-   * Currently just use this function whenever we test the robot.
+   * Currently will be used as diagnostics on the full robot.
    */
   @Override
   public void testPeriodic() {
+    //armMotorMaster.set(40);
+    // double thing = 0;
+    // double rightSpeed = m_oi.controller1.getY(Right);
+    // double leftSpeed = m_oi.controller1.getY(Left);
+    // double rightSpeed = m_oi.controller1.getY(Left);
+    // double leftSpeed = m_oi.controller1.getX(Right);
+    System.out.println(m_oi.controller2.getPOV());
+   
+   //m_driveTrain.arcadeDrive(m_oi.controller1.getY(Left), m_oi.controller1.getX(Right)); //ensure the drive train is running (Controller 1)
+    armMotorMaster.set(ControlMode.PercentOutput, m_oi.controller2.getY(Left)); //ensure the lift is working (Controller 2 Right Joystick)
+    // wristMotor.set(ControlMode.PercentOutput, m_oi.controller2.getY(Left)); //ensure the wrist works (Controller 2 Left Joystick)
+    // //System.out.println(limitSwitch.get());
+    //System.out.println(m_oi.controller2.getY(Left));
+    //System.out.println(armMotorMaster.getSelectedSensorPosition(0)); //See if the encoder is printing out anything
+    //see if the intake workes properly
+   
+    if (m_oi.controller2.getBumper(Left)){
+    //     intakePower = .4;
+      }
+      else if(m_oi.controller2.getBumper(Right)){
+        intakePower = -.4;
+      }
+      else{
+        intakePower = 0;
+      }
+    intake1.set(intakePower);
+    intake2.set(-intakePower);
+    //testing if the vision code will work...
     
-    
-  camera = new UsbCamera("camera","cam0");
-  CvSink cvSink = CameraServer.getInstance().getVideo();
-  
-  if (cvSink.grabFrame(mat,30) == 0)
-    	{
-    		System.out.println(cvSink.getError());
-    	}
-    	else
-    	{
-
-        	GripPipeline grip = new GripPipeline();
-        	
-        	
-            //System.out.println("running vision");
-				grip.process(mat);
-				//Thread.sleep(1000);
-				//System.out.println("runnig");
-				//System.out.println(grip.filterContoursOutput().get(0).size());
-				if (!(grip.filterContoursOutput().isEmpty())){
-					//System.out.println("hi");
-					Rect r = Imgproc.boundingRect(grip.filterContoursOutput().get(0));			
-					System.out.println(r.x + r.width/2);
-					}
-      }			
- }
+     //double hi = Robot.VisionAlgorithm.findCenter();
+  }
 }
+
 
