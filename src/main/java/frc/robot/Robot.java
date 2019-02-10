@@ -241,6 +241,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+    m_driveTrain.arcadeDrive(m_oi.controller2.getY(Left), m_oi.controller2.getX(Right));
     System.out.println(armMotorMaster.getSelectedSensorPosition(0));
     //armMotorMaster.set(ControlMode.PercentOutput, m_oi.controller2.getY(Left));
     if (m_oi.controller2.getAButton()){
@@ -269,9 +270,23 @@ public class Robot extends TimedRobot {
     else if (m_oi.controller2.getPOV()==90){
       armMotorMaster.set(ControlMode.MotionMagic,0);
     }
-    else {
-      armMotorMaster.set(ControlMode.PercentOutput,m_oi.controller2.getY(Left));
-    }  //System.out.println("hi");  
+   // else {
+     // armMotorMaster.set(ControlMode.PercentOutput,m_oi.controller2.getY(Left));
+    //}  //System.out.println("hi");  
+    if (m_oi.controller2.getBumper(Left)){
+      intakePower = .5;
+   }
+   else if(m_oi.controller2.getBumper(Right)){
+     intakePower = -.5;
+   }
+   else{
+     intakePower = 0;
+   }
+
+ intake2.set(-intakePower);
+ intake1.set(intakePower);
+ 
+ System.out.println(intakePower);
   }
 
   /**
@@ -288,7 +303,7 @@ public class Robot extends TimedRobot {
     // double leftSpeed = m_oi.controller1.getX(Right);
     //System.out.println(m_oi.controller2.getPOV());
    
-   //m_driveTrain.arcadeDrive(m_oi.controller1.getY(Left), m_oi.controller1.getX(Right)); //ensure the drive train is running (Controller 1)
+   // //ensure the drive train is running (Controller 1)
     //armMotorMaster.set(ControlMode.PercentOutput, m_oi.controller2.getY(Left)); //ensure the lift is working (Controller 2 Right Joystick)
     // wristMotor.set(ControlMode.PercentOutput, m_oi.controller2.getY(Left)); //ensure the wrist works (Controller 2 Left Joystick)
     // //System.out.println(limitSwitch.get());
@@ -306,8 +321,8 @@ public class Robot extends TimedRobot {
         intakePower = 0;
       }
 
-    intake2.set(-intakePower);
-    intake1.set(intakePower);
+    intake2.set(intakePower);
+    intake1.set(-intakePower);
     
     System.out.println(intakePower);
     //testing if the vision code will work...
