@@ -19,12 +19,12 @@ public class RobotMap {
   // number and the module. For example you with a rangefinder:
   
   //Spark motors for driving the robot
-  public static int sparkLeft = 0; //Left Spark motor port
+  public static int sparkLeft = 8; //Left Spark motor port
   public static int sparkRight = 9; //Right Spark motor port
 
   //Victor motors (intakes)
   public static int intake1 = 1;
-  public static int intake2 = 3;
+  public static int intake2 = 2;
   //Arm motors
   public static int arm1 = 1; 
   public static int arm2 = 2;

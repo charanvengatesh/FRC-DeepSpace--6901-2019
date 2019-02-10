@@ -107,8 +107,8 @@ public class Robot extends TimedRobot {
     previousLeft =0.4;
     previousRight=0.4;
     //intake initialization:
-    // intake1 = new Spark(RobotMap.intake1); //Intake motor 1
-    // intake2 = new Spark(RobotMap.intake2); //Intake motor 2
+    intake1 = new Spark(RobotMap.intake1); //Intake motor 1
+    intake2 = new Spark(RobotMap.intake2); //Intake motor 2
     // //ultrasonic initialization:
     //ultra = new Ultrasonic(1,1); 
     //ultra.setAutomaticMode(true);
@@ -286,10 +286,10 @@ public class Robot extends TimedRobot {
     // double leftSpeed = m_oi.controller1.getY(Left);
     // double rightSpeed = m_oi.controller1.getY(Left);
     // double leftSpeed = m_oi.controller1.getX(Right);
-    System.out.println(m_oi.controller2.getPOV());
+    //System.out.println(m_oi.controller2.getPOV());
    
    //m_driveTrain.arcadeDrive(m_oi.controller1.getY(Left), m_oi.controller1.getX(Right)); //ensure the drive train is running (Controller 1)
-    armMotorMaster.set(ControlMode.PercentOutput, m_oi.controller2.getY(Left)); //ensure the lift is working (Controller 2 Right Joystick)
+    //armMotorMaster.set(ControlMode.PercentOutput, m_oi.controller2.getY(Left)); //ensure the lift is working (Controller 2 Right Joystick)
     // wristMotor.set(ControlMode.PercentOutput, m_oi.controller2.getY(Left)); //ensure the wrist works (Controller 2 Left Joystick)
     // //System.out.println(limitSwitch.get());
     //System.out.println(m_oi.controller2.getY(Left));
@@ -297,16 +297,19 @@ public class Robot extends TimedRobot {
     //see if the intake workes properly
    
     if (m_oi.controller2.getBumper(Left)){
-    //     intakePower = .4;
+         intakePower = .5;
       }
       else if(m_oi.controller2.getBumper(Right)){
-        intakePower = -.4;
+        intakePower = -.5;
       }
       else{
         intakePower = 0;
       }
-    intake1.set(intakePower);
+
     intake2.set(-intakePower);
+    intake1.set(intakePower);
+    
+    System.out.println(intakePower);
     //testing if the vision code will work...
     
      //double hi = Robot.VisionAlgorithm.findCenter();
