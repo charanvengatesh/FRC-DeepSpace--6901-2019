@@ -12,12 +12,8 @@ package frc.robot;
  * the wiring easier and significantly reduces the number of magic numbers
  * floating around.
  */
-public class RobotMap {
-  // For example to map the left and right motors, you could define the
-  // following variables to use with your drivetrain subsystem.
-  // If you are using multiple modules, make sure to define both the port
-  // number and the module. For example you with a rangefinder:
-  
+public class Constants {
+  /**** Robot Ports ****/
   //Spark motors for driving the robot
   public static int sparkLeft = 8; //Left Spark motor port
   public static int sparkRight = 9; //Right Spark motor port
@@ -30,11 +26,31 @@ public class RobotMap {
   public static int arm2 = 2;
   public static int wrist = 0;
   //Xbox Controlller Ports
-  public static int Xbox1 = 0;
-  public static int Xbox2 = 0;
+  public static int Xbox1 = 2;
+  public static int Xbox2 = 1;
   //limit switch
   public static int limitSwitch1 = 0;
-  public static int limitSwitch2 = 0;
+  public static int limitSwitch2 = 1;
+  /*** Robot Constants values ***/
+  //Arm values:
+  public static int ball1 = -1850;
+  public static int ball2 = -4400;
+  public static int ball3 = -5750;
+  public static int hatch1 = -1000;
+  public static int hatch2 = -3500;
+  public static int hatch3 = -5500;
+  //TODO: Configure the hatch up and down values
+  public static int hatchUp = 0; 
+  public static int hatchDown = 0;
+  public static int defaultPosition = 0;
+  //Arm motion magic values:
+  public static int acceleration = 60;
+  public static int velocity = 200;
+  //Arm PIDF values:
+  public static int armKp = 3;
+  public static double armKi = .006;
+  public static double armKd = .1;
+  public static double armKf = 5;
 
 
 }

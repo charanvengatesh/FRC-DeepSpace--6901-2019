@@ -6,7 +6,7 @@
 /*----------------------------------------------------------------------------*/
 
 package frc.robot;
-import frc.robot.subsystems.VisionAlgorithm;
+
 //TODO organize inputs and variables & make sure the vision stuff works
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -16,18 +16,15 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Inputs.GripPipeline;
-import frc.robot.subsystems.VisionAlgorithm;
+import frc.robot.commands.MoveArm;
+import frc.robot.subsystems.Lift;
+import frc.robot.subsystems.Lift.Target;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 //import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.networktables.*;
-import org.opencv.core.Mat;
-import org.opencv.core.Rect;
-import org.opencv.imgproc.Imgproc;
 
-import edu.wpi.cscore.CvSink;
-import edu.wpi.cscore.CvSource;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.vision.VisionThread;
@@ -83,12 +80,10 @@ public class Robot extends TimedRobot {
   Command hello;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
   SmartDashboard dash;
-  public Mat mat;
-  public double previousRight;
-  public double previousLeft;
-  public CvSink cvSink;
+ 
   public GripPipeline grip;
   public Timer  timer;
+  public MoveArm command;
 
 
   /**
@@ -99,26 +94,25 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     m_oi = new OI(); //initializing the Operator Interface (OI) class
     //drive train initialization:
-    m_driveTrain = new DifferentialDrive(new Spark(RobotMap.sparkLeft), new Spark(RobotMap.sparkRight));  //Creating a differential drive with the spark motors
+    m_driveTrain = new DifferentialDrive(new Spark(Constants.sparkLeft), new Spark(Constants.sparkRight));  //Creating a differential drive with the spark motors
     UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
     //UsbCamera camera01 = CameraServer.getInstance().startAutomaticCapture();
     
     m_chooser.addOption("Hi", hello);
-    previousLeft =0.4;
-    previousRight=0.4;
+    
     //intake initialization:
-    intake1 = new Spark(RobotMap.intake1); //Intake motor 1
-    intake2 = new Spark(RobotMap.intake2); //Intake motor 2
+    intake1 = new Spark(Constants.intake1); //Intake motor 1
+    intake2 = new Spark(Constants.intake2); //Intake motor 2
     // //ultrasonic initialization:
     //ultra = new Ultrasonic(1,1); 
     //ultra.setAutomaticMode(true);
 
-    armMotorSlave = new VictorSPX(RobotMap.arm2);		// Follower MC, Could be a victor
-    armMotorMaster = new WPI_TalonSRX(RobotMap.arm1);		// Master MC, Talon SRX for Mag Encoder
+    armMotorSlave = new VictorSPX(Constants.arm2);		// Follower MC, Could be a victor
+    armMotorMaster = new WPI_TalonSRX(Constants.arm1);		// Master MC, Talon SRX for Mag Encoder
     // wristMotor = new TalonSRX(RobotMap.wrist); //creates an SRX for the robot wrist
-    // limitSwitch1 = new DigitalInput(RobotMap.limitSwitch1);
-    // limitSwitch2 = new DigitalInput(RobotMap.limitSwitch2);
-    mat = new Mat();
+    limitSwitch1 = new DigitalInput(Constants.limitSwitch1);
+    limitSwitch2 = new DigitalInput(Constants.limitSwitch2);
+    
     //  new Thread(() -> {
     //   //camera = CameraServer.getInstance().startAutomaticCapture();
     //   camera.setResolution(640, 480);
@@ -150,8 +144,8 @@ public class Robot extends TimedRobot {
     armMotorMaster.config_kI(0,.006);
     armMotorMaster.config_kD(0, .1);
     armMotorMaster.config_kF(0, 5);
-     armMotorMaster.configMotionAcceleration(60);
-     armMotorMaster.configMotionCruiseVelocity(200);
+     armMotorMaster.configMotionAcceleration(1000);
+     armMotorMaster.configMotionCruiseVelocity(240);
     
 
   }
@@ -198,7 +192,9 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     armMotorMaster.setSelectedSensorPosition(0);
-  
+    Target target = Target.ballLevel1;
+    command = new MoveArm(target);
+    command.start();
     // thing = 0;  
     // camera = new UsbCamera("camera","cam0");
     // camera.setResolution(640, 480);
@@ -212,9 +208,16 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
+    Scheduler.getInstance().run();
     //probably not going to do autunomous this year.
     //System.out.println(armMotorMaster.getSelectedSensorPosition(0));
-    //armMotorMaster.set(ControlMode.MotionMagic, 1850);
+    // if (limitSwitch1.get()){
+    //   armMotorMaster.set(ControlMode.PercentOutput, 1);
+    // }
+    // else{
+    //   armMotorMaster.set(ControlMode.PercentOutput, 0);
+    // }
+    
     
     //armMotorMaster.set(ControlMode.MotionMagic,4250);
     //double stuff = armMotorMaster.getSelectedSensorPosition(0);
@@ -241,7 +244,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    m_driveTrain.arcadeDrive(m_oi.controller2.getY(Left), m_oi.controller2.getX(Right));
+    m_driveTrain.arcadeDrive(m_oi.controller1.getY(Left), m_oi.controller1.getX(Right));
     System.out.println(armMotorMaster.getSelectedSensorPosition(0));
     //armMotorMaster.set(ControlMode.PercentOutput, m_oi.controller2.getY(Left));
     if (m_oi.controller2.getAButton()){
@@ -255,7 +258,13 @@ public class Robot extends TimedRobot {
       armMotorMaster.set(ControlMode.MotionMagic,-5750);
     }
     else if (m_oi.controller2.getXButton()){
-      armMotorMaster.set(ControlMode.MotionMagic,0);
+      if(limitSwitch1.get()){
+        armMotorMaster.set(ControlMode.PercentOutput,-.5);
+      }
+      else{
+        armMotorMaster.set(ControlMode.PercentOutput,0);
+        armMotorMaster.setSelectedSensorPosition(0);
+      }
     }
     else if (m_oi.controller2.getPOV()==180){
       armMotorMaster.set(ControlMode.MotionMagic,-1000);
@@ -270,13 +279,13 @@ public class Robot extends TimedRobot {
     else if (m_oi.controller2.getPOV()==90){
       armMotorMaster.set(ControlMode.MotionMagic,0);
     }
-   // else {
-     // armMotorMaster.set(ControlMode.PercentOutput,m_oi.controller2.getY(Left));
-    //}  //System.out.println("hi");  
-    if (m_oi.controller2.getBumper(Left)){
+    else {
+     armMotorMaster.set(ControlMode.PercentOutput,m_oi.controller2.getY(Left));
+    }  //System.out.println("hi");  
+    if (m_oi.controller1.getBumper(Left)){
       intakePower = .5;
    }
-   else if(m_oi.controller2.getBumper(Right)){
+   else if(m_oi.controller1.getBumper(Right)){
      intakePower = -.5;
    }
    else{
@@ -295,6 +304,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+    
     //armMotorMaster.set(40);
     // double thing = 0;
     // double rightSpeed = m_oi.controller1.getY(Right);
@@ -310,21 +320,20 @@ public class Robot extends TimedRobot {
     //System.out.println(m_oi.controller2.getY(Left));
     //System.out.println(armMotorMaster.getSelectedSensorPosition(0)); //See if the encoder is printing out anything
     //see if the intake workes properly
-   
-    if (m_oi.controller2.getBumper(Left)){
-         intakePower = .5;
-      }
-      else if(m_oi.controller2.getBumper(Right)){
-        intakePower = -.5;
-      }
-      else{
-        intakePower = 0;
-      }
-
-    intake2.set(intakePower);
-    intake1.set(-intakePower);
     
-    System.out.println(intakePower);
+    
+    //   else if(m_oi.controller2.getBumper(Right)){
+    //     intakePower = -.5;
+    //   }
+    //   else{
+    //     intakePower = 0;
+    //   }
+
+    // intake2.set(intakePower);
+    // intake1.set(-intakePower);
+    
+    // System.out.println(intakePower);
+    System.out.println(limitSwitch2.get());
     //testing if the vision code will work...
     
      //double hi = Robot.VisionAlgorithm.findCenter();
