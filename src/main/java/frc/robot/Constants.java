@@ -43,6 +43,7 @@ public class Constants {
   public static int hatchUp = 0; 
   public static int hatchDown = 0;
   public static int defaultPosition = 0;
+  public static int maxPosition = 0;
   //Arm motion magic values:
   public static int acceleration = 60;
   public static int velocity = 200;
@@ -51,6 +52,7 @@ public class Constants {
   public static double armKi = .006;
   public static double armKd = .1;
   public static double armKf = 5;
-
+  public static double intakeOut = -1;
+  public static double intakeIn = .5;
 
 }

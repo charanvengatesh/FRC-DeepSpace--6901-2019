@@ -68,7 +68,7 @@ public class Robot extends TimedRobot {
   public double intakePower; 
   public double thing;
   public double[] controllerValues;
-  public double speedFactor;
+ // public double speedFactor;
   public VisionThread visionThread;
   public NetworkTable table;
   NetworkTableEntry xEntry;
@@ -84,7 +84,9 @@ public class Robot extends TimedRobot {
   public GripPipeline grip;
   public Timer  timer;
   public MoveArm command;
-
+  public int armPosition;
+  public double turnMagnitude;
+  public double forwardMagnitude;
 
   /**
    * This function is run when the robot is first started up and should be
@@ -244,58 +246,86 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    m_driveTrain.arcadeDrive(m_oi.controller1.getY(Left), m_oi.controller1.getX(Right));
-    System.out.println(armMotorMaster.getSelectedSensorPosition(0));
-    //armMotorMaster.set(ControlMode.PercentOutput, m_oi.controller2.getY(Left));
-    if (m_oi.controller2.getAButton()){
-      armMotorMaster.set(ControlMode.MotionMagic,-1850);
+    if(1.25*Math.abs(turnMagnitude)<m_oi.controller1.getX(Right)){
+      turnMagnitude+=.05;
+    }                                                             
+    else{
+      turnMagnitude = m_oi.controller1.getX(Right);
     }
-    else if(m_oi.controller2.getBButton()){
-      armMotorMaster.set(ControlMode.MotionMagic,-4400);
+    if (1.25*Math.abs(forwardMagnitude)<=m_oi.controller1.getY(Left)){
+      forwardMagnitude+=.05;
     }
-    else if (m_oi.controller2.getYButton()) {
-      //make it move up 3 roatations
-      armMotorMaster.set(ControlMode.MotionMagic,-5750);
+    else{
+      forwardMagnitude = m_oi.controller1.getY(Left);
     }
-    else if (m_oi.controller2.getXButton()){
-      if(limitSwitch1.get()){
-        armMotorMaster.set(ControlMode.PercentOutput,-.5);
-      }
-      else{
-        armMotorMaster.set(ControlMode.PercentOutput,0);
-        armMotorMaster.setSelectedSensorPosition(0);
-      }
-    }
-    else if (m_oi.controller2.getPOV()==180){
-      armMotorMaster.set(ControlMode.MotionMagic,-1000);
-    }
-    else if(m_oi.controller2.getPOV()==270){
-      armMotorMaster.set(ControlMode.MotionMagic,-3500);
-    }
-    else if (m_oi.controller2.getPOV()==0) {
-      //make it move up 3 roatations
-      armMotorMaster.set(ControlMode.MotionMagic,-5500);
-    }
-    else if (m_oi.controller2.getPOV()==90){
-      armMotorMaster.set(ControlMode.MotionMagic,0);
-    }
-    else {
-     armMotorMaster.set(ControlMode.PercentOutput,m_oi.controller2.getY(Left));
-    }  //System.out.println("hi");  
-    if (m_oi.controller1.getBumper(Left)){
-      intakePower = .5;
-   }
-   else if(m_oi.controller1.getBumper(Right)){
-     intakePower = -.5;
-   }
-   else{
-     intakePower = 0;
-   }
+    
+  m_driveTrain.arcadeDrive(forwardMagnitude,turnMagnitude);
+    // armPosition = armMotorMaster.getSelectedSensorPosition(0);
+    // if(m_oi.controller2.getAButton()){
+    //   armPosition = Constants.ball1;
+    // }
+    // else if (m_oi.controller2.getBButton()){
+    //   armPosition = Constants.ball2;
+    // }
+    // else if (m_oi.controller2.getYButton()){
+    //   armPosition = Constants.ball3;
+    // }
+    // else if (m_oi.controller2.getXButton()){
+    //   armPosition = Constants.defaultPosition;
+    // }
+    // else if (m_oi.controller2.getPOV()==180){
+    //   armPosition = Constants.ball3;
+    // }
+    // else if (m_oi.controller2.getPOV()==270){
+    //   armPosition = Constants.ball3;
+    // }
+    // else if (m_oi.controller2.getPOV()==0){
+    //   armPosition = Constants.ball3;
+    // }
+    // else if (m_oi.controller2.getBumper(Right)){
+    //   armPosition = armMotorMaster.getSelectedSensorPosition(0) + Constants.hatchUp;
+    // }
+    // else{
+    //   armMotorMaster.set(ControlMode.PercentOutput,m_oi.controller2.getY(Left));
+    // }
+    
+    
 
- intake2.set(-intakePower);
- intake1.set(intakePower);
+    // if (
+      
+    //   ((limitSwitch1.get() && limitSwitch2.get() && (Math.abs(m_oi.controller2.getY(Left))<=.1)))){
+    //   armMotorMaster.set(ControlMode.MotionMagic,armPosition);
+    // }
+    // else if (!limitSwitch1.get()){
+    //   armMotorMaster.set(ControlMode.PercentOutput,0);
+    //   armMotorMaster.setSelectedSensorPosition(0);
+    // }
+    
+    // else if (!limitSwitch2.get()){
+    //   armMotorMaster.set(ControlMode.PercentOutput,0);
+    //   armMotorMaster.setSelectedSensorPosition(Constants.maxPosition);
+    // }
+    // else if (Math.abs(m_oi.controller2.getY(Left))>=.1){
+    //   armMotorMaster.set(ControlMode.PercentOutput,m_oi.controller2.getY(Left));
+    // }
+    
+     
+    
+    System.out.println(armPosition);
+    System.out.println((limitSwitch1.get() && limitSwitch2.get() && (Math.abs(m_oi.controller2.getY(Left))<.1)));
+    // if (m_oi.controller1.getBumper(Right)){
+    //   intakePower = Constants.intakeOut;
+    // }
+    // else if (m_oi.controller1.getBumper(Left)){
+    //   intakePower = Constants.intakeIn;
+    // }
+    // else{
+    //   intakePower = 0;
+    // }
+    // intake2.set(intakePower);
+    // intake1.set(intakePower);
  
- System.out.println(intakePower);
+  
   }
 
   /**
@@ -304,7 +334,72 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
-    
+    if (m_oi.controller2.getAButton()){
+      armMotorMaster.set(ControlMode.MotionMagic,Constants.ball1);
+    }
+    else if(m_oi.controller2.getBButton()){
+      armMotorMaster.set(ControlMode.MotionMagic,Constants.ball2);
+    }
+    else if (m_oi.controller2.getYButton()) {
+      if(limitSwitch2.get()){
+        armMotorMaster.set(ControlMode.MotionMagic,Constants.ball3);
+      }
+      else{
+        armMotorMaster.set(ControlMode.PercentOutput,0);
+        armMotorMaster.setSelectedSensorPosition(Constants.maxPosition);
+      }
+    }
+    else if (m_oi.controller2.getXButton()){
+      if(limitSwitch1.get()){
+        armMotorMaster.set(ControlMode.MotionMagic,Constants.defaultPosition);
+      }
+      else{
+        armMotorMaster.set(ControlMode.PercentOutput,0);
+        armMotorMaster.setSelectedSensorPosition(Constants.defaultPosition);
+      }
+    }
+    else if (m_oi.controller2.getPOV()==180){
+      armMotorMaster.set(ControlMode.MotionMagic,Constants.hatch1);
+    }
+    else if(m_oi.controller2.getPOV()==270){
+      armMotorMaster.set(ControlMode.MotionMagic,Constants.hatch2);
+    }
+    else if (m_oi.controller2.getPOV()==0) {
+      //make it move up 3 roatations
+      if(limitSwitch2.get()){
+        armMotorMaster.set(ControlMode.MotionMagic,Constants.hatch3);
+      }
+      else{
+        armMotorMaster.set(ControlMode.PercentOutput,0);
+        armMotorMaster.setSelectedSensorPosition(Constants.maxPosition);
+      }
+      
+    }
+    else if (m_oi.controller2.getPOV()==90){
+      armMotorMaster.set(ControlMode.MotionMagic,0);
+    }
+    else if (m_oi.controller2.getBumper(Left)){
+      armMotorMaster.set(
+        ControlMode.MotionMagic, armMotorMaster.getSelectedSensorPosition(0) + Constants.hatchUp
+        );
+    }
+    else if (m_oi.controller2.getBumper(Left)){
+      armMotorMaster.set(
+        ControlMode.MotionMagic, armMotorMaster.getSelectedSensorPosition(0) + Constants.hatchDown
+        );
+    }
+    else {
+     armMotorMaster.set(ControlMode.PercentOutput,m_oi.controller2.getY(Left));
+    }  //System.out.println("hi");  
+    if (m_oi.controller1.getBumper(Left)){
+      intakePower = .5;
+    }
+    else if(m_oi.controller1.getBumper(Right)){
+     intakePower = -1;
+    }
+    else{
+     intakePower = 0;
+    }
     //armMotorMaster.set(40);
     // double thing = 0;
     // double rightSpeed = m_oi.controller1.getY(Right);
@@ -333,7 +428,7 @@ public class Robot extends TimedRobot {
     // intake1.set(-intakePower);
     
     // System.out.println(intakePower);
-    System.out.println(limitSwitch2.get());
+    System.out.println(m_oi.controller2.getY(Left));
     //testing if the vision code will work...
     
      //double hi = Robot.VisionAlgorithm.findCenter();
