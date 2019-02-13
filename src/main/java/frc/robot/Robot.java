@@ -299,11 +299,13 @@ public class Robot extends TimedRobot {
     // else if (!limitSwitch1.get()){
     //   armMotorMaster.set(ControlMode.PercentOutput,0);
     //   armMotorMaster.setSelectedSensorPosition(0);
+    //   armMotorMaster.set(ControlMode.MotionMagic,0);
     // }
     
     // else if (!limitSwitch2.get()){
     //   armMotorMaster.set(ControlMode.PercentOutput,0);
     //   armMotorMaster.setSelectedSensorPosition(Constants.maxPosition);
+    //   armMotorMaster.set(ControlMode.MotionMagic,armPosition //TODO find a good arm position after robot maxes out
     // }
     // else if (Math.abs(m_oi.controller2.getY(Left))>=.1){
     //   armMotorMaster.set(ControlMode.PercentOutput,m_oi.controller2.getY(Left));
