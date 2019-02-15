@@ -16,9 +16,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Inputs.GripPipeline;
-import frc.robot.commands.MoveArm;
-import frc.robot.subsystems.Lift;
-import frc.robot.subsystems.Lift.Target;
+
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 //import edu.wpi.first.wpilibj.Talon;
@@ -57,36 +55,35 @@ public class Robot extends TimedRobot {
   public static DifferentialDrive m_driveTrain;
   public static SpeedControllerGroup leftSide;
   public static SpeedControllerGroup rightSide;
-  public static Spark intake1;
-  public static Spark intake2;
-  public static VictorSPX armMotorSlave;
-  public static WPI_TalonSRX armMotorMaster;
-  public static TalonSRX wristMotor;
+  // public static Spark intake1;
+  // public static Spark intake2;
+  // public static VictorSPX armMotorSlave;
+  // public static WPI_TalonSRX armMotorMaster;
+  // public static TalonSRX wristMotor;
   
   
-  //Sensors and variables:
-  public double intakePower; 
-  public double thing;
-  public double[] controllerValues;
- // public double speedFactor;
-  public VisionThread visionThread;
-  public NetworkTable table;
-  NetworkTableEntry xEntry;
-  public UsbCamera camera;
-  public DigitalInput limitSwitch1;
-  public DigitalInput limitSwitch2;
+//   //Sensors and variables:
+//   public double intakePower; 
+//   public double thing;
+//   public double[] controllerValues;
+//  // public double speedFactor;
+//   public VisionThread visionThread;
+//   public NetworkTable table;
+//   NetworkTableEntry xEntry;
+//   public UsbCamera camera;
+//   public DigitalInput limitSwitch1;
+//   public DigitalInput limitSwitch2;
   
-  Command m_autonomousCommand;
-  Command hello;
-  SendableChooser<Command> m_chooser = new SendableChooser<>();
-  SmartDashboard dash;
+   Command m_autonomousCommand;
+  // Command hello;
+  // SendableChooser<Command> m_chooser = new SendableChooser<>();
+  // SmartDashboard dash;
  
-  public GripPipeline grip;
-  public Timer  timer;
-  public MoveArm command;
-  public int armPosition;
-  public double turnMagnitude;
-  public double forwardMagnitude;
+  // public GripPipeline grip;
+  // public Timer  timer;
+  // public int armPosition;
+   public double turnMagnitude;
+   public double forwardMagnitude;
 
   /**
    * This function is run when the robot is first started up and should be
@@ -97,23 +94,23 @@ public class Robot extends TimedRobot {
     m_oi = new OI(); //initializing the Operator Interface (OI) class
     //drive train initialization:
     m_driveTrain = new DifferentialDrive(new Spark(Constants.sparkLeft), new Spark(Constants.sparkRight));  //Creating a differential drive with the spark motors
-    UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
+    //UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
     //UsbCamera camera01 = CameraServer.getInstance().startAutomaticCapture();
     
-    m_chooser.addOption("Hi", hello);
+   // m_chooser.addOption("Hi", hello);
     
     //intake initialization:
-    intake1 = new Spark(Constants.intake1); //Intake motor 1
-    intake2 = new Spark(Constants.intake2); //Intake motor 2
-    // //ultrasonic initialization:
-    //ultra = new Ultrasonic(1,1); 
+    // intake1 = new Spark(Constants.intake1); //Intake motor 1
+    // intake2 = new Spark(Constants.intake2); //Intake motor 2
+    // // //ultrasonic initialization:
+    // //ultra = new Ultrasonic(1,1); 
     //ultra.setAutomaticMode(true);
 
-    armMotorSlave = new VictorSPX(Constants.arm2);		// Follower MC, Could be a victor
-    armMotorMaster = new WPI_TalonSRX(Constants.arm1);		// Master MC, Talon SRX for Mag Encoder
+    // armMotorSlave = new VictorSPX(Constants.arm2);		// Follower MC, Could be a victor
+    // armMotorMaster = new WPI_TalonSRX(Constants.arm1);		// Master MC, Talon SRX for Mag Encoder
     // wristMotor = new TalonSRX(RobotMap.wrist); //creates an SRX for the robot wrist
-    limitSwitch1 = new DigitalInput(Constants.limitSwitch1);
-    limitSwitch2 = new DigitalInput(Constants.limitSwitch2);
+   // limitSwitch1 = new DigitalInput(Constants.limitSwitch1);
+    //limitSwitch2 = new DigitalInput(Constants.limitSwitch2);
     
     //  new Thread(() -> {
     //   //camera = CameraServer.getInstance().startAutomaticCapture();
@@ -133,21 +130,21 @@ public class Robot extends TimedRobot {
     //   }
     // }).start();
   // //resets arm motors
-    timer = new Timer();
-    armMotorMaster.configFactoryDefault();
-    armMotorSlave.configFactoryDefault();
-    // wristMotor.configFactoryDefault();
-    armMotorSlave.follow(armMotorMaster);
-    armMotorMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 1);
-    armMotorMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
-    armMotorMaster.setSelectedSensorPosition(0);
-    // wristMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
-    armMotorMaster.config_kP(0,3);
-    armMotorMaster.config_kI(0,.006);
-    armMotorMaster.config_kD(0, .1);
-    armMotorMaster.config_kF(0, 5);
-     armMotorMaster.configMotionAcceleration(1000);
-     armMotorMaster.configMotionCruiseVelocity(240);
+    // timer = new Timer();
+    // armMotorMaster.configFactoryDefault();
+    // armMotorSlave.configFactoryDefault();
+    // // wristMotor.configFactoryDefault();
+    // armMotorSlave.follow(armMotorMaster);
+    // armMotorMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 1);
+    // armMotorMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
+    // armMotorMaster.setSelectedSensorPosition(0);
+    // // wristMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
+    // armMotorMaster.config_kP(0,3);
+    // armMotorMaster.config_kI(0,.006);
+    // armMotorMaster.config_kD(0, .1);
+    // armMotorMaster.config_kF(0, 5);
+    //  armMotorMaster.configMotionAcceleration(1000);
+    //  armMotorMaster.configMotionCruiseVelocity(240);
     
 
   }
@@ -193,10 +190,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    armMotorMaster.setSelectedSensorPosition(0);
-    Target target = Target.ballLevel1;
-    command = new MoveArm(target);
-    command.start();
+   
     // thing = 0;  
     // camera = new UsbCamera("camera","cam0");
     // camera.setResolution(640, 480);
@@ -229,7 +223,7 @@ public class Robot extends TimedRobot {
     
   @Override
   public void teleopInit() {
-    armMotorMaster.setSelectedSensorPosition(0);
+  //  armMotorMaster.setSelectedSensorPosition(0);
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -246,20 +240,41 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    if(1.25*Math.abs(turnMagnitude)<m_oi.controller1.getX(Right)){
-      turnMagnitude+=.05;
-    }                                                             
-    else{
-      turnMagnitude = m_oi.controller1.getX(Right);
-    }
-    if (1.25*Math.abs(forwardMagnitude)<=m_oi.controller1.getY(Left)){
-      forwardMagnitude+=.05;
-    }
-    else{
-      forwardMagnitude = m_oi.controller1.getY(Left);
-    }
-    
-  m_driveTrain.arcadeDrive(forwardMagnitude,turnMagnitude);
+    // if(1.25*Math.abs(turnMagnitude)<m_oi.controller1.getX(Right)){
+    //   if (turnMagnitude<0){
+    //     turnMagnitude-=.05;
+    //   }
+    //   else{
+    //     turnMagnitude+=.05;
+    //   }
+      
+    // }                                                             
+    // else{
+    //   turnMagnitude = m_oi.controller1.getX(Right);
+    // }
+    // if (1.12*Math.abs(forwardMagnitude)<=m_oi.controller1.getY(Left)){
+    //   if (forwardMagnitude<0){
+    //     forwardMagnitude-=.07;
+    //   }
+    //   else{
+    //     forwardMagnitude+=.07;
+    //   }
+      
+    // }
+    // else{
+    //   forwardMagnitude = m_oi.controller1.getY(Left);
+    // }
+    // System.out.println(m_oi.controller1.getTriggerAxis(Right));
+    // // if (m_oi.controller1.getTriggerAxis(Left)>0){
+    // //   m_driveTrain.arcadeDrive(forwardMagnitude*.5,turnMagnitude*.75);
+    // // //turnMagnitude *=.9;
+    // // }
+    // else{
+    //   m_driveTrain.arcadeDrive(forwardMagnitude,turnMagnitude);
+    // }
+    //m_driveTrain.arcadeDrive(forwardMagnitude,turnMagnitude*.85);
+   // System.out.println(forwardMagnitude);
+    m_driveTrain.arcadeDrive(m_oi.controller1.getY(Left)*.5, m_oi.controller1.getX(Right)*.5);
     // armPosition = armMotorMaster.getSelectedSensorPosition(0);
     // if(m_oi.controller2.getAButton()){
     //   armPosition = Constants.ball1;
@@ -299,13 +314,11 @@ public class Robot extends TimedRobot {
     // else if (!limitSwitch1.get()){
     //   armMotorMaster.set(ControlMode.PercentOutput,0);
     //   armMotorMaster.setSelectedSensorPosition(0);
-    //   armMotorMaster.set(ControlMode.MotionMagic,0);
     // }
     
     // else if (!limitSwitch2.get()){
     //   armMotorMaster.set(ControlMode.PercentOutput,0);
     //   armMotorMaster.setSelectedSensorPosition(Constants.maxPosition);
-    //   armMotorMaster.set(ControlMode.MotionMagic,armPosition //TODO find a good arm position after robot maxes out
     // }
     // else if (Math.abs(m_oi.controller2.getY(Left))>=.1){
     //   armMotorMaster.set(ControlMode.PercentOutput,m_oi.controller2.getY(Left));
@@ -313,13 +326,13 @@ public class Robot extends TimedRobot {
     
      
     
-    System.out.println(armPosition);
-    System.out.println((limitSwitch1.get() && limitSwitch2.get() && (Math.abs(m_oi.controller2.getY(Left))<.1)));
+    //System.out.println(armPosition);
+    //System.out.println((limitSwitch1.get() && limitSwitch2.get() && (Math.abs(m_oi.controller2.getY(Left))<.1)));
     // if (m_oi.controller1.getBumper(Right)){
-    //   intakePower = Constants.intakeOut;
+    //   intakePower = .5;
     // }
     // else if (m_oi.controller1.getBumper(Left)){
-    //   intakePower = Constants.intakeIn;
+    //   intakePower = -1;
     // }
     // else{
     //   intakePower = 0;
@@ -336,73 +349,73 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
-    if (m_oi.controller2.getAButton()){
-      armMotorMaster.set(ControlMode.MotionMagic,Constants.ball1);
-    }
-    else if(m_oi.controller2.getBButton()){
-      armMotorMaster.set(ControlMode.MotionMagic,Constants.ball2);
-    }
-    else if (m_oi.controller2.getYButton()) {
-      if(limitSwitch2.get()){
-        armMotorMaster.set(ControlMode.MotionMagic,Constants.ball3);
-      }
-      else{
-        armMotorMaster.set(ControlMode.PercentOutput,0);
-        armMotorMaster.setSelectedSensorPosition(Constants.maxPosition);
-      }
-    }
-    else if (m_oi.controller2.getXButton()){
-      if(limitSwitch1.get()){
-        armMotorMaster.set(ControlMode.MotionMagic,Constants.defaultPosition);
-      }
-      else{
-        armMotorMaster.set(ControlMode.PercentOutput,0);
-        armMotorMaster.setSelectedSensorPosition(Constants.defaultPosition);
-      }
-    }
-    else if (m_oi.controller2.getPOV()==180){
-      armMotorMaster.set(ControlMode.MotionMagic,Constants.hatch1);
-    }
-    else if(m_oi.controller2.getPOV()==270){
-      armMotorMaster.set(ControlMode.MotionMagic,Constants.hatch2);
-    }
-    else if (m_oi.controller2.getPOV()==0) {
-      //make it move up 3 roatations
-      if(limitSwitch2.get()){
-        armMotorMaster.set(ControlMode.MotionMagic,Constants.hatch3);
-      }
-      else{
-        armMotorMaster.set(ControlMode.PercentOutput,0);
-        armMotorMaster.setSelectedSensorPosition(Constants.maxPosition);
-      }
+    // if (m_oi.controller2.getAButton()){
+    //   armMotorMaster.set(ControlMode.MotionMagic,Constants.ball1);
+    // }
+    // else if(m_oi.controller2.getBButton()){
+    //   armMotorMaster.set(ControlMode.MotionMagic,Constants.ball2);
+    // }
+    // else if (m_oi.controller2.getYButton()) {
+    //   if(limitSwitch2.get()){
+    //     armMotorMaster.set(ControlMode.MotionMagic,Constants.ball3);
+    //   }
+    //   else{
+    //     armMotorMaster.set(ControlMode.PercentOutput,0);
+    //     armMotorMaster.setSelectedSensorPosition(Constants.maxPosition);
+    //   }
+    // }
+    // else if (m_oi.controller2.getXButton()){
+    //   if(limitSwitch1.get()){
+    //     armMotorMaster.set(ControlMode.MotionMagic,Constants.defaultPosition);
+    //   }
+    //   else{
+    //     armMotorMaster.set(ControlMode.PercentOutput,0);
+    //     armMotorMaster.setSelectedSensorPosition(Constants.defaultPosition);
+    //   }
+    // }
+    // else if (m_oi.controller2.getPOV()==180){
+    //   armMotorMaster.set(ControlMode.MotionMagic,Constants.hatch1);
+    // }
+    // else if(m_oi.controller2.getPOV()==270){
+    //   armMotorMaster.set(ControlMode.MotionMagic,Constants.hatch2);
+    // }
+    // else if (m_oi.controller2.getPOV()==0) {
+    //   //make it move up 3 roatations
+    //   if(limitSwitch2.get()){
+    //     armMotorMaster.set(ControlMode.MotionMagic,Constants.hatch3);
+    //   }
+    //   else{
+    //     armMotorMaster.set(ControlMode.PercentOutput,0);
+    //     armMotorMaster.setSelectedSensorPosition(Constants.maxPosition);
+    //   }
       
-    }
-    else if (m_oi.controller2.getPOV()==90){
-      armMotorMaster.set(ControlMode.MotionMagic,0);
-    }
-    else if (m_oi.controller2.getBumper(Left)){
-      armMotorMaster.set(
-        ControlMode.MotionMagic, armMotorMaster.getSelectedSensorPosition(0) + Constants.hatchUp
-        );
-    }
-    else if (m_oi.controller2.getBumper(Left)){
-      armMotorMaster.set(
-        ControlMode.MotionMagic, armMotorMaster.getSelectedSensorPosition(0) + Constants.hatchDown
-        );
-    }
-    else {
-     armMotorMaster.set(ControlMode.PercentOutput,m_oi.controller2.getY(Left));
-    }  //System.out.println("hi");  
-    if (m_oi.controller1.getBumper(Left)){
-      intakePower = .5;
-    }
-    else if(m_oi.controller1.getBumper(Right)){
-     intakePower = -1;
-    }
-    else{
-     intakePower = 0;
-    }
-    //armMotorMaster.set(40);
+    // }
+    // else if (m_oi.controller2.getPOV()==90){
+    //   armMotorMaster.set(ControlMode.MotionMagic,0);
+    // }
+    // else if (m_oi.controller2.getBumper(Left)){
+    //   armMotorMaster.set(
+    //     ControlMode.MotionMagic, armMotorMaster.getSelectedSensorPosition(0) + Constants.hatchUp
+    //     );
+    // }
+    // else if (m_oi.controller2.getBumper(Left)){
+    //   armMotorMaster.set(
+    //     ControlMode.MotionMagic, armMotorMaster.getSelectedSensorPosition(0) + Constants.hatchDown
+    //     );
+    // }
+    // else {
+    //  armMotorMaster.set(ControlMode.PercentOutput,m_oi.controller2.getY(Left));
+    // }  //System.out.println("hi");  
+    // if (m_oi.controller1.getBumper(Left)){
+    //   intakePower = .5;
+    // }
+    // else if(m_oi.controller1.getBumper(Right)){
+    //  intakePower = -1;
+    // }
+    // else{
+    //  intakePower = 0;
+    // }
+    // //armMotorMaster.set(40);
     // double thing = 0;
     // double rightSpeed = m_oi.controller1.getY(Right);
     // double leftSpeed = m_oi.controller1.getY(Left);
