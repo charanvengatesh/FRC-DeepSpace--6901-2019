@@ -9,25 +9,15 @@ package frc.robot;
 
 //TODO organize inputs and variables & make sure the vision stuff works
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.GenericHID.Hand; //ignore any green squiggly underlines
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.Spark;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
-//import edu.wpi.first.wpilibj.Talon;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
-//import edu.wpi.first.wpilibj.AnalogGyro;
-import edu.wpi.first.wpilibj.DigitalInput;
-//import edu.wpi.first.wpilibj.Ultrasonic;
-//imports for the talon and stuff
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
-import com.ctre.phoenix.motorcontrol.can.*;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-
+import frc.robot.subsystems.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -38,34 +28,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
  */
 
 public class Robot extends TimedRobot {
-  //Operator Interface:
-  private static final Hand Right = Hand.kRight; //Lefthand Side for controller
-  private static final Hand Left = Hand.kLeft; //Righthand side for controller
-  public static OI m_oi;
  
-  //Motors:
-  public static DifferentialDrive m_driveTrain;
-  public static SpeedControllerGroup leftSide;
-  public static SpeedControllerGroup rightSide;
-  public static Spark intake1;
-  public static Spark intake2;
-  public static VictorSPX armMotorSlave;
-  public static WPI_TalonSRX armMotorMaster;
-  public static TalonSRX wristMotor;
-  
-  
-//   //Sensors and variables:
-     public double intakePower; 
-//   public double thing;
-//   public double[] controllerValues;
-//  // public double speedFactor;
-//   public VisionThread visionThread;
-//   public NetworkTable table;
-//   NetworkTableEntry xEntry;
-//   public UsbCamera camera;
-   public DigitalInput limitSwitch1;
-
-  
    Command m_autonomousCommand;
   // Command hello;
   // SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -83,62 +46,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    m_oi = new OI(); //initializing the Operator Interface (OI) class
-    //drive train initialization:
-    m_driveTrain = new DifferentialDrive(new Spark(Constants.sparkLeft), new Spark(Constants.sparkRight));  //Creating a differential drive with the spark motors
     UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
-    //UsbCamera camera01 = CameraServer.getInstance().startAutomaticCapture();
-    
-   // m_chooser.addOption("Hi", hello);
-    
-    //intake initialization:
-    intake1 = new Spark(Constants.intake1); //Intake motor 1
-    intake2 = new Spark(Constants.intake2); //Intake motor 2
-    // // //ultrasonic initialization:
-    // //ultra = new Ultrasonic(1,1); 
-    //ultra.setAutomaticMode(true);
-
-    armMotorSlave = new VictorSPX(Constants.arm2);		// Follower MC, Could be a victor
-    armMotorMaster = new WPI_TalonSRX(Constants.arm1);		// Master MC, Talon SRX for Mag Encoder
-    wristMotor = new TalonSRX(Constants.wrist); //creates an SRX for the robot wrist
-    limitSwitch1 = new DigitalInput(Constants.limitSwitch1);
-    //limitSwitch2 = new DigitalInput(Constants.limitSwitch2);
-    
-    //  new Thread(() -> {
-    //   //camera = CameraServer.getInstance().startAutomaticCapture();
-    //   camera.setResolution(640, 480);
-
-    //   CvSink cvSink = CameraServer.getInstance().getVideo();
-    //   CvSource outputStream = CameraServer.getInstance().putVideo("Processed", 640, 480);
-
-    //   Mat source = new Mat();
-    //   Mat output = new Mat();
-
-    //   while(!Thread.interrupted()) {
-    //       cvSink.grabFrame(source);
-    //       GripPipeline cam = new GripPipeline();
-    //       cam.process(source);
-    //       outputStream.putFrame(output);
-    //   }
-    // }).start();
-   //resets arm motors
-    // timer = new Timer();
-    armMotorMaster.configFactoryDefault();
-    armMotorSlave.configFactoryDefault();
-    wristMotor.configFactoryDefault();
-    armMotorSlave.follow(armMotorMaster);
-    armMotorMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 1);
-    armMotorMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
-    armMotorMaster.setSelectedSensorPosition(0);
-    wristMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
-    armMotorMaster.config_kP(0,9);
-    armMotorMaster.config_kI(0,.006);
-    armMotorMaster.config_kD(0, 80);
-    armMotorMaster.config_kF(0,5);
-     armMotorMaster.configMotionAcceleration(750);
-     armMotorMaster.configMotionCruiseVelocity(220);
-    
-
   }
 
   /**
@@ -182,7 +90,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-   
+    Lift.initializeLift();
     // thing = 0;  
     // camera = new UsbCamera("camera","cam0");
     // camera.setResolution(640, 480);
@@ -197,14 +105,14 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
- 
+    Lift.runArmHold(Lift.LiftPosition.HATCH1);
   }
     
   @Override
   public void teleopInit() {
-    //Lift.initializeLift();
-    armMotorMaster.setSelectedSensorPosition(0);
-    armPosition = 0;
+    Lift.initializeLift();
+    //armMotorMaster.setSelectedSensorPosition(0);
+    //armPosition = 0;
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -221,67 +129,17 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-  
- m_driveTrain.arcadeDrive(m_oi.controller1.getY(Left),m_oi.controller1.getX(Right));
- 
-    if (m_oi.controller2.getAButton()){
-      armMotorMaster.set(ControlMode.MotionMagic,Constants.ball1);
+    System.out.println(Lift.setPositionHold());
+    if(OI.controller1.getAButton()){
+      Lift.wristMotor.setSelectedSensorPosition(0);
     }
-    else if(m_oi.controller2.getBButton()){
-      armMotorMaster.set(ControlMode.MotionMagic,Constants.ball2);
-    }
-    else if(m_oi.controller2.getYButton()){
-      armMotorMaster.set(ControlMode.MotionMagic,Constants.ball3);
-    }
-    else if(m_oi.controller2.getXButton()){
-      if (limitSwitch1.get()){
-        armMotorMaster.set(ControlMode.PercentOutput,.6);
-      }
-      else{
-        armMotorMaster.set(ControlMode.PercentOutput,0);
-        armMotorMaster.setSelectedSensorPosition(0);
-       // System.out.println("stopped");
-      } 
-    }
-    else if (m_oi.controller2.getPOV()==180){
-      armMotorMaster.set(ControlMode.MotionMagic,Constants.hatch1);
-    }
-    else if (m_oi.controller2.getPOV()==270){
-      armMotorMaster.set(ControlMode.MotionMagic,Constants.hatch2);
-    }
-    else if (m_oi.controller2.getPOV()==0){
-      armMotorMaster.set(ControlMode.MotionMagic,Constants.hatch3);
-    }
-    else if (m_oi.controller2.getTriggerAxis(Right)>0){
-      armMotorMaster.set(ControlMode.MotionMagic,armMotorMaster.getSelectedSensorPosition(0)-Constants.hatchUp);
-    }
-    else if (m_oi.controller2.getTriggerAxis(Left)>0){
-      armMotorMaster.set(ControlMode.MotionMagic,armMotorMaster.getSelectedSensorPosition(0)+ Constants.hatchUp);
-    }
-    else if (Math.abs(m_oi.controller2.getY(Left))>=.09){
-      armMotorMaster.set(ControlMode.PercentOutput,m_oi.controller2.getY(Left));
-    }
-    else{
-      armMotorMaster.set(ControlMode.PercentOutput,0);
-    }
-    System.out.println(armMotorMaster.getSelectedSensorPosition(0));
-    if (Math.abs(m_oi.controller2.getY(Right))>=.09){
-      wristMotor.set(ControlMode.PercentOutput, -m_oi.controller2.getY(Right)*.5);
-    }
-    System.out.println(m_oi.controller2.getY(Left));
-
-    if (m_oi.controller2.getBumper(Right)){
-      intakePower = -0.5;
-    }
-    else if (m_oi.controller2.getBumper(Left)){
-      intakePower = 1;
-    }
-    else{
-      intakePower = 0;
-    }
-    intake2.set(intakePower);
-    intake1.set(-intakePower);
- 
+    Lift.setPosition();
+    Lift.runArm();
+    //Lift.runArmHold(Lift.setPositionHold());
+    //Lift.moveManual();
+    DriveTrain.customArcadeDriver();
+    Intake.setIntake();
+    Lift.wristMotor.set(ControlMode.PercentOutput,OI.controller2.getY(Hand.kRight)*.5);
   
   }
 
@@ -291,19 +149,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
-    // if (m_oi.controller2.getBumper(Right)){
-    //   intakePower = -0.5;
-    // }
-    // else if (m_oi.controller2.getBumper(Left)){
-    //   intakePower = 1;
-    // }
-    // else{
-    //   intakePower = 0;
-    // }
-    // intake2.set(intakePower);
-    // intake1.set(-intakePower);
-  wristMotor.set(ControlMode.PercentOutput,-m_oi.controller2.getY(Right)*.5);
-  System.out.println(wristMotor.getSelectedSensorPosition(0));
+
+ //System.out.println(m_oi.controller1.getY(Left));
   //  armMotorMaster.set(ControlMode.PercentOutput,m_oi.controller2.getY(Left)*.5);
   }
 }
