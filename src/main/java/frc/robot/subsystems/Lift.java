@@ -16,7 +16,8 @@ public class Lift{
     public static WPI_TalonSRX wristMotor = new WPI_TalonSRX(Constants.wrist);
     public static DigitalInput limitSwitch1 = new DigitalInput(Constants.limitSwitch1);
     public static OI m_oi = new OI();
-    public static LiftPosition position = LiftPosition.RESET;
+    public static LiftPosition currentPosition = null;
+    public static LiftPosition aimedPosition = LiftPosition.RESET;
     public static void initializeLift(){
         armMaster.configFactoryDefault();
         armSlave.configFactoryDefault();
@@ -55,42 +56,62 @@ public class Lift{
     public static void setPosition(){
         
         if(OI.controller2.getAButton()){
-            position = LiftPosition.BALL1;
+            aimedPosition = LiftPosition.BALL1;
         }
         else if(OI.controller2.getBButton()){
-            position = LiftPosition.BALL2;
+            aimedPosition = LiftPosition.BALL2;
         }
         else if(OI.controller2.getYButton()){
-            position = LiftPosition.BALL3;
+            aimedPosition = LiftPosition.BALL3;
         }
         else if(OI.controller2.getXButton()){
-            position = LiftPosition.RESET;
+            aimedPosition = LiftPosition.RESET;
         }
         else if(OI.controller2.getPOV()==180){
-            position =  LiftPosition.HATCH1;
+            aimedPosition =  LiftPosition.HATCH1;
         }
         else if(OI.controller2.getPOV()==270){
-            position = LiftPosition.HATCH2;
+            aimedPosition = LiftPosition.HATCH2;
         }
         else if(OI.controller2.getPOV()==0){
-            position = LiftPosition.HATCH3;
+            aimedPosition = LiftPosition.HATCH3;
         }
         else if(OI.controller2.getTriggerAxis(Hand.kRight)>0){
-            position = LiftPosition.HATCHUP;
+            aimedPosition = LiftPosition.HATCHUP;
         }
         else if(OI.controller2.getTriggerAxis(Hand.kLeft)>0){
-            position =  LiftPosition.HATCHDOWN;
+            aimedPosition =  LiftPosition.HATCHDOWN;
         }
         else if(OI.controller2.getY(Hand.kLeft)>=.09){
-            position = LiftPosition.MANUAL;
+            aimedPosition = LiftPosition.MANUAL;
         }
     }
+    
+    public static boolean positionRecognizer(LiftPosition aimedState)
+    {
+        //example case for hatch level 1
+        //if(Math.abs(sensorPosition - aimedPosition) < 100)
+        //  return true;
+        //else
+        //  return false;
+        
+        //Do this for all states. Maybe make it more efficient than what I did here. But hopefully you get the idea.
+    }
+        
     public static void runArm(){
         
-        
-        switch(position){
+        //I would reccomend having another method that recognizes what position the elvtr is in.
+        //Say the elevator is within 100 encoder units of the aimed state encoder value, then set the enums to whatever.
+        switch(aimedPosition){
             case MANUAL:
                 moveManual();
+                //if(positionRecognizer(aimedState))
+                //{
+                //  currentPosition = aimedState
+                //}
+                //else
+                // moveManual() or something
+                //currentPosition = LiftPosition.MANUAL; //do this for the rest of the cases. -Kunal
                 break;
             case RESET:
                 resetLift();
