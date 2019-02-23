@@ -18,8 +18,8 @@ import edu.wpi.first.wpilibj.XboxController;
 public class OI {
   
   //Creates an Xbox Controller object
-  XboxController controller1 = new XboxController(Constants.Xbox1);
-  XboxController controller2 = new XboxController(Constants.Xbox2);
+  public static XboxController controller1 = new XboxController(Constants.Xbox1);
+  public static XboxController controller2 = new XboxController(Constants.Xbox2);
   //Joystick controller = new Joystick(0);
 
   public OI(){

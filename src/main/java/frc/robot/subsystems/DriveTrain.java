@@ -11,8 +11,8 @@ public class DriveTrain{
     public static double turnMagnitude = 0;
     public static double forwardMagnitude = 0;
     public static void customArcadeDriver(){
-        turnMagnitude = OI.controller1.getX(Hand.kRight)*.9;
-        forwardMagnitude = OI.controller1.getY(Hand.kLeft)*.8;
+        turnMagnitude = OI.controller1.getX(Hand.kRight)*.8;
+        forwardMagnitude = OI.controller1.getY(Hand.kLeft)*.9;
         if(Math.abs(turnMagnitude)<=.07){
             turnMagnitude = 0;
         }
@@ -21,7 +21,7 @@ public class DriveTrain{
         }
         if (OI.controller1.getTriggerAxis(Hand.kLeft)>0){
             turnMagnitude *= .6;
-            forwardMagnitude *= .6;
+            forwardMagnitude *= .7;
         }
         else if (OI.controller1.getTriggerAxis(Hand.kRight)>0){
             forwardMagnitude*=1.1;

@@ -26,31 +26,31 @@ public class Constants {
   public static int arm2 = 2;
   public static int wrist = 0;
   //Xbox Controlller Ports
-  public static int Xbox1 = 2;
-  public static int Xbox2 = 1;
+  public static int Xbox1 = 1;
+  public static int Xbox2 = 0;
   //limit switch
   public static int limitSwitch1 = 0;
   public static int limitSwitch2 = 1;
   /*** Robot Constants values ***/
   //Arm values:
-  public static int ball1 = -1850;
-  public static int ball2 = -4400;
-  public static int ball3 = -5750;
-  public static int hatch1 = -1000;
-  public static int hatch2 = -3500;
-  public static int hatch3 = -5500;
+  public static int ball1 = -2280;
+  public static int ball2 = -5050;
+  public static int ball3 = -5700;
+  public static int hatch1 = -700;
+  public static int hatch2 = -3220;
+  public static int hatch3 = -5700;
   //TODO: Configure the hatch up and down values
-  public static int hatchUp = 0; 
-  public static int hatchDown = 0;
+  public static int hatchMovement = 375;
+  public static int wristUp = -500;
   public static int defaultPosition = 0;
   public static int maxPosition = 0;
   //Arm motion magic values:
-  public static int acceleration = 60;
+  public static int acceleration = 750;
   public static int velocity = 200;
   //Arm PIDF values:
-  public static int armKp = 3;
+  public static int armKp = 9;
   public static double armKi = .006;
-  public static double armKd = .1;
+  public static double armKd = 80;
   public static double armKf = 5;
   public static double intakeOut = -1;
   public static double intakeIn = .5;

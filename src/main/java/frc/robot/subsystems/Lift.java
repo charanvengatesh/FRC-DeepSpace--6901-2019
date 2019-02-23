@@ -18,7 +18,9 @@ public class Lift{
     public static OI m_oi = new OI();
     public static LiftPosition currentPosition = null;
     public static LiftPosition aimedPosition = LiftPosition.RESET;
+    public static int encoderPos = 0;
     public static void initializeLift(){
+        aimedPosition = LiftPosition.RESET;
         armMaster.configFactoryDefault();
         armSlave.configFactoryDefault();
         wristMotor.configFactoryDefault();
@@ -39,6 +41,8 @@ public class Lift{
         wristMotor.config_kD(0,Constants.armKd);
         wristMotor.config_kF(0,Constants.armKf);
         wristMotor.setSelectedSensorPosition(0);
+        wristMotor.configMotionAcceleration(50);
+        wristMotor.configMotionCruiseVelocity(100);
     }
     public static enum LiftPosition{
         BALL1,
@@ -81,14 +85,35 @@ public class Lift{
         }
         else if(OI.controller2.getTriggerAxis(Hand.kLeft)>0){
             aimedPosition =  LiftPosition.HATCHDOWN;
+            encoderPos = armMaster.getSelectedSensorPosition(0);
         }
-        else if(OI.controller2.getY(Hand.kLeft)>=.09){
+        else if(Math.abs(OI.controller2.getY(Hand.kLeft))>=.09){
             aimedPosition = LiftPosition.MANUAL;
+            encoderPos = armMaster.getSelectedSensorPosition(0);
         }
     }
     
     public static boolean positionRecognizer(LiftPosition aimedState)
     {
+        switch(aimedState){
+            case BALL1:
+            return (Math.abs(armMaster.getSelectedSensorPosition(0)-Constants.ball1)<100);
+            case BALL2:
+            return (Math.abs(armMaster.getSelectedSensorPosition(0)-Constants.ball2)<100);
+            case BALL3:
+            return (Math.abs(armMaster.getSelectedSensorPosition(0)-Constants.ball3)<100);
+            case HATCH1:
+            return (Math.abs(armMaster.getSelectedSensorPosition(0)-Constants.hatch1)<100);
+            case HATCH2:
+            return (Math.abs(armMaster.getSelectedSensorPosition(0)-Constants.hatch2)<100);
+            case HATCH3:
+            return (Math.abs(armMaster.getSelectedSensorPosition(0)-Constants.hatch3)<100);
+            default:
+            return true;
+        }
+        
+
+        
         //example case for hatch level 1
         //if(Math.abs(sensorPosition - aimedPosition) < 100)
         //  return true;
@@ -104,112 +129,98 @@ public class Lift{
         //Say the elevator is within 100 encoder units of the aimed state encoder value, then set the enums to whatever.
         switch(aimedPosition){
             case MANUAL:
-                moveManual();
-                //if(positionRecognizer(aimedState))
-                //{
-                //  currentPosition = aimedState
-                //}
-                //else
-                // moveManual() or something
-                //currentPosition = LiftPosition.MANUAL; //do this for the rest of the cases. -Kunal
+                
+                if(Math.abs(OI.controller2.getY(Hand.kLeft))>=.09)
+                {
+                 moveManual();
+                }
+                else{
+                 armMaster.set(ControlMode.PercentOutput,0);
+                }
+                manualWrist();
                 break;
             case RESET:
-                resetLift();
+                if(limitSwitch1.get()){
+                    resetLift();
+                }
+                else{
+                    armMaster.set(ControlMode.PercentOutput,0);
+                    armMaster.setSelectedSensorPosition(0);
+                }
+                manualWrist();
                 break;
             case BALL1:
+            if(positionRecognizer(aimedPosition)){
+                currentPosition = aimedPosition;
+            }
+            else{
                 moveArm(Constants.ball1);
+                currentPosition = aimedPosition;
+            }
+            manualWrist();
                 break;
             case BALL2:
+            if(positionRecognizer(aimedPosition)){
+                currentPosition = aimedPosition;
+            }
+            else{
                 moveArm(Constants.ball2);
+                currentPosition = aimedPosition;
+            }
+            manualWrist();
                 break;
             case BALL3:
+            if(positionRecognizer(aimedPosition)){
+                currentPosition = aimedPosition;
+             //   moveWrist(Constants.wristUp);
+            }
+            else{
                 moveArm(Constants.ball3);
-                moveWrist(Constants.wristUp);
+                //moveWrist(Constants.wristUp);
+                currentPosition = aimedPosition;
+            }
+            manualWrist();
+            
                 break;
             case HATCH1:
+            if(positionRecognizer(aimedPosition)){
+                currentPosition = aimedPosition;
+            }
+            else{
                 moveArm(Constants.hatch1);
+                currentPosition = aimedPosition;
+            }
+            manualWrist();
                 break;
             case HATCH2:
+            if(positionRecognizer(aimedPosition)){
+                currentPosition = aimedPosition;
+            }
+            else{
                 moveArm(Constants.hatch2);
+                currentPosition = aimedPosition;
+            }
+            manualWrist();
                 break;
             case HATCH3:
+            if(positionRecognizer(aimedPosition)){
+                currentPosition = aimedPosition;
+            }
+            else{
                 moveArm(Constants.hatch3);
+                currentPosition = aimedPosition;
+            }
+            manualWrist();
                 break;
             case HATCHDOWN:
-                hatchPickup(false);
+                moveArm(encoderPos + Constants.hatchMovement);
                 break;
             case HATCHUP:
-                hatchPickup(true);
+                moveArm(encoderPos - Constants.hatchMovement);
                 break;
 
         }
     }
-    /**Hold Button System */
-    
-    public static LiftPosition setPositionHold(){
-        if(OI.controller2.getAButton()){
-            return LiftPosition.BALL1;
-        }
-        else if(OI.controller2.getBButton()){
-            return LiftPosition.BALL2;
-        }
-        else if(OI.controller2.getYButton()){
-            return LiftPosition.BALL3;
-        }
-        else if(OI.controller2.getXButton()){
-            return LiftPosition.RESET;
-        }
-        else if(OI.controller2.getPOV()==180){
-            return  LiftPosition.HATCH1;
-        }
-        else if(OI.controller2.getPOV()==270){
-            return LiftPosition.HATCH2;
-        }
-        else if(OI.controller2.getPOV()==0){
-            return LiftPosition.HATCH3;
-        }
-        else if(OI.controller2.getTriggerAxis(Hand.kRight)>0){
-            return LiftPosition.HATCHUP;
-        }
-        else if(OI.controller2.getTriggerAxis(Hand.kLeft)>0){
-            return  LiftPosition.HATCHDOWN;
-        }
-        else {
-            return LiftPosition.MANUAL;
-        }
-      
-    }
-    
-    public static void runArmHold(LiftPosition position1){
-        switch(position1){
-            case MANUAL:
-                moveManual();
-            case RESET:
-                resetLift();
-            case BALL1:
-                moveArm(Constants.ball1);
-            case BALL2:
-                moveArm(Constants.ball2);
-            case BALL3:
-                moveArm(Constants.ball3);
-                moveWrist(Constants.wristUp);
-            case HATCH1:
-                moveArm(Constants.hatch1);
-            case HATCH2:
-                moveArm(Constants.hatch2);
-            case HATCH3:
-                moveArm(Constants.hatch3);
-            case HATCHDOWN:
-                hatchPickup(false);
-            case HATCHUP:
-                hatchPickup(true);
-
-        }
-    }
-    
-    
-    
-    
     
     public static void resetLift(){
         if (limitSwitch1.get()){
@@ -225,25 +236,35 @@ public class Lift{
         armMaster.set(ControlMode.MotionMagic,position);
     }
     public static void moveManual(){
-        if (Math.abs(OI.controller2.getY(Hand.kLeft))>=.09){
-            armMaster.set(ControlMode.PercentOutput,-OI.controller2.getY(Hand.kLeft));
+        double controllerValue = OI.controller2.getY(Hand.kLeft);
+        if (Math.abs(controllerValue)>=.09){
+            armMaster.set(ControlMode.PercentOutput,controllerValue);
         }
         else{
             armMaster.set(ControlMode.PercentOutput,0);
         }
         
     }
-    public static void moveWrist(int encoderPosition){
-        wristMotor.set(ControlMode.MotionMagic,wristMotor.getSelectedSensorPosition(0)+encoderPosition);
+    public static void moveWrist(int targetEncoderPosition){
+        int movingWrist = targetEncoderPosition + encoderPos;
+        wristMotor.set(ControlMode.MotionMagic,movingWrist);
 
+    }
+    public static void manualWrist(){
+        if (Math.abs(OI.controller2.getY(Hand.kRight))>=.05){
+            wristMotor.set(ControlMode.PercentOutput,-OI.controller2.getY(Hand.kRight));
+        }
+        else{
+            wristMotor.set(ControlMode.PercentOutput,0);
+        }
     }
     public static void hatchPickup(boolean up){
         int setPosition = 0;
         if (up){
-            setPosition = armMaster.getSelectedSensorPosition(0) + Constants.hatchUp;
+            setPosition = armMaster.getSelectedSensorPosition(0) - Constants.hatchMovement;
         }
         else{
-            setPosition = armMaster.getSelectedSensorPosition(0) + Constants.hatchDown;
+            setPosition = armMaster.getSelectedSensorPosition(0) + Constants.hatchMovement;
         }
         moveArm(setPosition);
     }
