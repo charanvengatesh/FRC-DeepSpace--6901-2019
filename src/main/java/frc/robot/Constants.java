@@ -15,18 +15,18 @@ package frc.robot;
 public class Constants {
   /**** Robot Ports ****/
   //Spark motors for driving the robot
-  public static int sparkLeft = 8; //Left Spark motor port
-  public static int sparkRight = 9; //Right Spark motor port
+  public static int sparkLeft = 2; //Left Spark motor port
+  public static int sparkRight = 3; //Right Spark motor port
 
   //Victor motors (intakes)
-  public static int intake1 = 1;
-  public static int intake2 = 2;
+  public static int intake1 = 0;
+  public static int intake2 = 1;
   //Arm motors
   public static int arm1 = 1; 
   public static int arm2 = 2;
   public static int wrist = 0;
   //Xbox Controlller Ports
-  public static int Xbox1 = 1;
+  public static int Xbox1 = 2;
   public static int Xbox2 = 0;
   //limit switch
   public static int limitSwitch1 = 0;
@@ -34,7 +34,7 @@ public class Constants {
   /*** Robot Constants values ***/
   //Arm values:
   public static int ball1 = -2280;
-  public static int ball2 = -5050;
+  public static int ball2 = -4800;
   public static int ball3 = -5700;
   public static int hatch1 = -700;
   public static int hatch2 = -3220;
@@ -45,12 +45,12 @@ public class Constants {
   public static int defaultPosition = 0;
   public static int maxPosition = 0;
   //Arm motion magic values:
-  public static int acceleration = 750;
+  public static int acceleration = 500;
   public static int velocity = 200;
   //Arm PIDF values:
-  public static int armKp = 9;
-  public static double armKi = .006;
-  public static double armKd = 80;
+  public static int armKp = 10;
+  public static double armKi = .003;
+  public static double armKd = 100;
   public static double armKf = 5;
   public static double intakeOut = -1;
   public static double intakeIn = .5;

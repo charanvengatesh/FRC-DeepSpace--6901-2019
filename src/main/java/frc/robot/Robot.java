@@ -38,7 +38,7 @@ public class Robot extends TimedRobot {
    public int armPosition;
    public double turnMagnitude;
    public double forwardMagnitude;
-   public Spark ledLights = new Spark(5);
+   public Spark ledLights = new Spark(4);
 
   /**
    * This function is run when the robot is first started up and should be
@@ -152,6 +152,7 @@ public class Robot extends TimedRobot {
     //System.out.println(Lift.armMaster.getSelectedSensorPosition(0));
     Lift.setPosition();
     Lift.runArm();
+    System.out.println(Lift.armMaster.getSelectedSensorPosition(0));
     DriveTrain.customArcadeDriver();
     Intake.setIntake();
   //  Lift.wristMotor.set(ControlMode.PercentOutput,OI.controller2.getY(Hand.kRight)*.5);
@@ -166,6 +167,7 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {
     ledLights.set(.29);
     System.out.println("HI");
+    Lift.moveManual();
  //System.out.println(m_oi.controller1.getY(Left));
   //  armMotorMaster.set(ControlMode.PercentOutput,m_oi.controller2.getY(Left)*.5);
   }

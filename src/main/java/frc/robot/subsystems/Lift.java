@@ -19,6 +19,7 @@ public class Lift{
     public static LiftPosition currentPosition = null;
     public static LiftPosition aimedPosition = LiftPosition.RESET;
     public static int encoderPos = 0;
+    public static DigitalInput limitSwitch2 = new DigitalInput(Constants.limitSwitch2);
     public static void initializeLift(){
         aimedPosition = LiftPosition.RESET;
         armMaster.configFactoryDefault();
@@ -114,19 +115,10 @@ public class Lift{
         
 
         
-        //example case for hatch level 1
-        //if(Math.abs(sensorPosition - aimedPosition) < 100)
-        //  return true;
-        //else
-        //  return false;
-        
-        //Do this for all states. Maybe make it more efficient than what I did here. But hopefully you get the idea.
-    }
+            }
         
     public static void runArm(){
         
-        //I would reccomend having another method that recognizes what position the elvtr is in.
-        //Say the elevator is within 100 encoder units of the aimed state encoder value, then set the enums to whatever.
         switch(aimedPosition){
             case MANUAL:
                 
@@ -170,13 +162,13 @@ public class Lift{
             manualWrist();
                 break;
             case BALL3:
-            if(positionRecognizer(aimedPosition)){
+            if(limitSwitch2.get()){
+                moveArm(Constants.ball3);
                 currentPosition = aimedPosition;
-             //   moveWrist(Constants.wristUp);
+             
             }
             else{
-                moveArm(Constants.ball3);
-                //moveWrist(Constants.wristUp);
+                armMaster.set(ControlMode.PercentOutput,0);
                 currentPosition = aimedPosition;
             }
             manualWrist();
