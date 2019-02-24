@@ -83,6 +83,7 @@ public class Lift{
         }
         else if(OI.controller2.getTriggerAxis(Hand.kRight)>0){
             aimedPosition = LiftPosition.HATCHUP;
+            encoderPos = armMaster.getSelectedSensorPosition(0);
         }
         else if(OI.controller2.getTriggerAxis(Hand.kLeft)>0){
             aimedPosition =  LiftPosition.HATCHDOWN;
