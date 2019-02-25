@@ -196,15 +196,17 @@ public class Lift{
             manualWrist();
                 break;
             case HATCH3:
-            if(positionRecognizer(aimedPosition)){
+            if(limitSwitch2.get()){
+                moveArm(Constants.hatch3);
                 currentPosition = aimedPosition;
+             
             }
             else{
-                moveArm(Constants.hatch3);
+                armMaster.set(ControlMode.PercentOutput,0);
                 currentPosition = aimedPosition;
             }
             manualWrist();
-                break;
+             break;
             case HATCHDOWN:
                 moveArm(encoderPos + Constants.hatchMovement);
                 break;
