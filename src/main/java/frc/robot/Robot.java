@@ -13,9 +13,13 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.sensors.PigeonIMU;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
-import edu.wpi.cscore.UsbCamera;
-import edu.wpi.first.cameraserver.CameraServer;
+
+
 import frc.robot.subsystems.*;
 
 /**
@@ -26,7 +30,8 @@ import frc.robot.subsystems.*;
  * project.
  */
 
-public class Robot extends TimedRobot {
+public class Robot extends TimedRobot
+{
  
    Command m_autonomousCommand;
   // Command hello;
@@ -38,15 +43,19 @@ public class Robot extends TimedRobot {
    public int armPosition;
    public double turnMagnitude;
    public double forwardMagnitude;
-   public Spark ledLights = new Spark(4);
+   public Spark ledLights;
+   //public PigeonIMU gyro = new PigeonIMU(0);
 
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
    */
   @Override
-  public void robotInit() {
-    UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
+  public void robotInit()
+  {
+  
+   
+
   }
 
   /**
@@ -58,7 +67,8 @@ public class Robot extends TimedRobot {
    * LiveWindow and SmartDashboard integrated updating.
    */
   @Override
-  public void robotPeriodic() {
+  public void robotPeriodic()
+  {
     
   }
 
@@ -68,12 +78,14 @@ public class Robot extends TimedRobot {
    * the robot is disabled.
    */
   @Override
-  public void disabledInit() {
+  public void disabledInit()
+  {
     
   }
 
   @Override
-  public void disabledPeriodic() {
+  public void disabledPeriodic()
+  {
     Scheduler.getInstance().run();
   } 
 
@@ -89,8 +101,10 @@ public class Robot extends TimedRobot {
    * to the switch structure below with additional strings & commands.
    */
   @Override
-  public void autonomousInit() {
-    Lift.initializeLift();
+  public void autonomousInit()
+  {
+    VisionControl.resetController();
+    //Lift.initializeLift();
     // thing = 0;  
     // camera = new UsbCamera("camera","cam0");
     // camera.setResolution(640, 480);
@@ -103,13 +117,19 @@ public class Robot extends TimedRobot {
    * This function is called periodically during autonomous, leave this blank.
    */
   @Override
-  public void autonomousPeriodic() {
+  public void autonomousPeriodic()
+  {
     Scheduler.getInstance().run();
+    VisionControl.center(0,0);
+
+    System.out.println(VisionControl.outputh);
+    DriveTrain.driveTrain.arcadeDrive(0,-VisionControl.outputh);
     
   }
     
   @Override
-  public void teleopInit() {
+  public void teleopInit()
+  {
     Lift.initializeLift();
     Lift.wristMotor.set(ControlMode.PercentOutput,0);
         //armMotorMaster.setSelectedSensorPosition(0);
@@ -118,7 +138,8 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    if (m_autonomousCommand != null) {
+    if (m_autonomousCommand != null)
+    {
       m_autonomousCommand.cancel();
     }
     
@@ -129,7 +150,8 @@ public class Robot extends TimedRobot {
    * This function is called periodically during operator control.
    */
   @Override
-  public void teleopPeriodic() {
+  public void teleopPeriodic()
+  {
     // if(Math.abs(OI.controller2.getY(Hand.kRight))>=.09){
     //   Lift.wristMotor.set(ControlMode.PercentOutput,OI.controller2.getY(Hand.kRight));
 
@@ -154,6 +176,7 @@ public class Robot extends TimedRobot {
     Lift.runArm();
     System.out.println(Lift.armMaster.getSelectedSensorPosition(0));
     DriveTrain.customArcadeDriver();
+    DriveTrain.driveTrain.arcadeDrive(DriveTrain.forwardMagnitude, DriveTrain.turnMagnitude);
     Intake.setIntake();
   //  Lift.wristMotor.set(ControlMode.PercentOutput,OI.controller2.getY(Hand.kRight)*.5);
     
@@ -164,12 +187,15 @@ public class Robot extends TimedRobot {
    * Currently will be used as diagnostics on the full robot.
    */
   @Override
-  public void testPeriodic() {
-    ledLights.set(.29);
-    System.out.println("HI");
-    Lift.moveManual();
- //System.out.println(m_oi.controller1.getY(Left));
-  //  armMotorMaster.set(ControlMode.PercentOutput,m_oi.controller2.getY(Left)*.5);
+  public void testPeriodic()
+  {
+
+    // NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    // NetworkTableEntry tx = table.getEntry("tx");
+    // double x = tx.getDouble(0.0);
+    // System.out.println(x);
+   
+
   }
 }
 

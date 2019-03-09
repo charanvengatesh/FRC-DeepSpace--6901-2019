@@ -26,8 +26,8 @@ public class Constants {
   public static int arm2 = 2;
   public static int wrist = 0;
   //Xbox Controlller Ports
-  public static int Xbox1 = 2;
-  public static int Xbox2 = 0;
+  public static int Xbox1 = 0;
+  public static int Xbox2 = 1;
   //limit switch
   public static int limitSwitch1 = 0;
   public static int limitSwitch2 = 1;
@@ -54,5 +54,18 @@ public class Constants {
   public static double armKf = 5;
   public static double intakeOut = -1;
   public static double intakeIn = .5;
-
+  //Limelight values
+  public static String limeLightKey = "limelight";
+  public static String targetXKey = "tx";
+  public static String targetYKey= "ty";
+  public static String targetAreaKey = "ta";
+  public static String camModeKey = "camMode";
+  public static String ledModeKey = "ledMode";
+  public static double visionP = 0.0001;
+  public static double visionI = 0;
+  public static double minSpeedTurn = .5;
+  public static double minSpeedForward =0.5;
+  public static double maxSpeed = 1;
+  public static double threshold = 0;
+  public static double visionAreaP = 0;
 }
