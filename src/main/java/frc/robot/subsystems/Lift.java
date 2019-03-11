@@ -226,24 +226,14 @@ public class Lift
             manualWrist();
                 break;
             case HATCH3:
-<<<<<<< HEAD
-            if(limitSwitch2.get()){
-                moveArm(Constants.hatch3);
-=======
             if(positionRecognizer(aimedPosition))
             {
->>>>>>> WOrking on limelight code
                 currentPosition = aimedPosition;
              
             }
-<<<<<<< HEAD
-            else{
-                armMaster.set(ControlMode.PercentOutput,0);
-=======
             else
             {
                 moveArm(Constants.hatch3);
->>>>>>> WOrking on limelight code
                 currentPosition = aimedPosition;
             }
             manualWrist();
