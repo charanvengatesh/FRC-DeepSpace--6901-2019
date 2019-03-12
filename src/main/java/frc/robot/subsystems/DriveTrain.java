@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.Constants;
 import frc.robot.OI;
+import frc.robot.Inputs.Limelight;
 
 public class DriveTrain{
     public static DifferentialDrive driveTrain = new DifferentialDrive(new Spark(Constants.sparkLeft),new Spark(Constants.sparkRight));
@@ -94,6 +95,15 @@ public class DriveTrain{
             turnMagnitude = -.45;
         }
         turnMagnitude*=-1;
+        /* Tried to get to switch between driver and camera but not working*/
+        // if(OI.controller1.getBumper(Hand.kLeft))
+        // {
+        //     Limelight.driverCam();
+        // }
+        // else if (OI.controller1.getBumper(Hand.kRight))
+        // {
+        //     Limelight.visionCam();
+        // }
     }
     public static void customArcadeDrive()
     {
@@ -117,6 +127,15 @@ public class DriveTrain{
             forwardMagnitude*=Constants.forwardFullSpeed;
             turnMagnitude*=Constants.turnFullSpeed;
         }
+        /* Tried to get to switch between driver and camera but not working*/
+        // if(OI.controller1.getBumper(Hand.kLeft))
+        // {
+        //     VisionControl.endControl();
+        // }
+        // else if (OI.controller1.getBumper(Hand.kRight))
+        // {
+        //     VisionControl.startControl();
+        // }
         
  
     }

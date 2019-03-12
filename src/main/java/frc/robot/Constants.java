@@ -60,7 +60,7 @@ public class Constants {
   public static String targetXKey = "tx";
   public static String targetYKey= "ty";
   public static String targetAreaKey = "ta";
-  public static String camModeKey = "camMode";
+  public static String camModeKey = "pipeline";
   public static String ledModeKey = "ledMode";
   public static double visionP = .8;
   public static double visionI = 0;
