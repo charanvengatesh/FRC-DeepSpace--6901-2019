@@ -7,12 +7,15 @@ import frc.robot.Inputs.Limelight;
 
 public class VisionControl 
 {
-    public static double sumError =0;
-    public static double error =0;
-    public static double areaError =0;
-    public static double outputh = 0;
-    public static double outputy = 0;
-    public static double area = 0;
+    public static double turnError;
+    public static double areaError;
+    public static double outputh;
+    public static double outputy;
+    public static double sumError;
+    public static double previousError;
+    public static double differenceError;
+    public static double timeoutCounter=0;
+    
     public static void startControl()
     {
         Limelight.lightOn();
@@ -25,23 +28,26 @@ public class VisionControl
     }
     public static void resetController()
     {
+        
+        turnError = 0;
+        areaError = 0;
         sumError = 0;
-        error = 0;
+        differenceError =0;
     }
-    public static void center(double threshold1,double threshold2)
+    public static void center(double turnThreshold,double forwardThreshold)
     {
         Limelight.updateValues();
-        error = -(Limelight.x/27);
-        areaError = 9-Limelight.area;
-        if (error < threshold1 && error > - threshold1)
+        turnError = -(Limelight.x/29); //Maximum degree error is +/- 29 so this puts it on a scale from -1 to 1
+        areaError = Constants.targetArea-Limelight.area;
+        if (Math.abs(turnError)< turnThreshold)
         {
             outputh = 0;
         }
         else
         {
-            centerAlgorithm(error);
+            centerAlgorithm(turnError);
         }
-        if (areaError<threshold2 && areaError>-threshold2)
+        if (areaError<forwardThreshold)
         {
             outputy =0;
         }
@@ -49,12 +55,14 @@ public class VisionControl
         {
             forward(areaError);
         }
-
+        
     }
     
     public static void forward(double error)
     {
-        outputy = Constants.visionAreaP*areaError;
+    
+       
+        outputy = Constants.visionAreaP*error + Constants.minSpeedForward;
         if (Math.abs(outputy) < Constants.minSpeedForward && outputy >0)
         {
             outputy = Constants.minSpeedForward;
@@ -73,28 +81,54 @@ public class VisionControl
         }   
 
     }
+
     public static void centerAlgorithm(double error)
     {
+        double minSpeedTurn;
+        sumError += error*.02;
+        differenceError = (error-previousError)/.02;
         
-        
-        sumError += error;
-        outputh = Constants.visionP*error;
-        
-        if (Math.abs(outputh) < Constants.minSpeedTurn && outputh >0)
+        if (Math.abs(previousError) <= Math.abs(error) + .01)
         {
-            outputh = Constants.minSpeedTurn;
+            timeoutCounter++;
         }
-        else if (Math.abs(outputh)<Constants.minSpeedTurn && outputh<0)
+        else
         {
-            outputh = -Constants.minSpeedTurn;
+            timeoutCounter = 0;
         }
-        else if (outputh>Constants.maxSpeed)
+        if (timeoutCounter >= 40 && timeoutCounter<80)
+        {
+            minSpeedTurn = .45;
+        }
+        else if (timeoutCounter>=80&&timeoutCounter<120)
+        {
+            minSpeedTurn = .6;
+        }
+        else if (timeoutCounter>=120)
+        {
+            minSpeedTurn = .7;
+        }
+        else
+        {
+            minSpeedTurn = Constants.minSpeedTurn;
+        }
+        if (error<0)
+        {
+            outputh = Constants.visionAreaP*error + Constants.visionD*differenceError + Constants.visionI*sumError - minSpeedTurn;
+        }
+        else
+        {
+            outputh = Constants.visionAreaP*error + Constants.visionD*differenceError + Constants.visionI*sumError + minSpeedTurn;
+        }
+        
+        if (outputh>Constants.maxSpeed)
         {
             outputh = Constants.maxSpeed;
         }
         else if (outputh<-Constants.maxSpeed)
         {
             outputh = -Constants.maxSpeed;
-        }   
+        }
+        previousError = error;   
     }
 }

@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import javax.lang.model.util.ElementScanner6;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
@@ -55,6 +57,7 @@ public class Lift
         HATCH1,
         HATCH2,
         HATCH3,
+        HATCHPICKUP,
         RESET,
         HATCHUP,
         HATCHDOWN,
@@ -102,11 +105,17 @@ public class Lift
             aimedPosition =  LiftPosition.HATCHDOWN;
             encoderPos = armMaster.getSelectedSensorPosition(0);
         }
+        else if(Math.abs(OI.controller2.getPOV())==90)
+        {
+            aimedPosition = LiftPosition.HATCHPICKUP;
+          //  encoderPos = armMaster.getSelectedSensorPosition(0);
+        }
         else if(Math.abs(OI.controller2.getY(Hand.kLeft))>=.09)
         {
             aimedPosition = LiftPosition.MANUAL;
             encoderPos = armMaster.getSelectedSensorPosition(0);
         }
+        
     }
     
     public static boolean positionRecognizer(LiftPosition aimedState)
@@ -125,6 +134,8 @@ public class Lift
             return (Math.abs(armMaster.getSelectedSensorPosition(0)-Constants.hatch2)<100);
             case HATCH3:
             return (Math.abs(armMaster.getSelectedSensorPosition(0)-Constants.hatch3)<100);
+            case HATCHPICKUP:
+            return (Math.abs(armMaster.getSelectedSensorPosition(0)-Constants.hatchPickup)<100);
             default:
             return true;
         }
@@ -244,19 +255,29 @@ public class Lift
             case HATCHUP:
                 moveArm(encoderPos - Constants.hatchMovement);
                 break;
-
+            case HATCHPICKUP:
+                if(positionRecognizer(aimedPosition))
+                {
+                    currentPosition = aimedPosition;
+                }
+                else
+                {
+                    moveArm(Constants.hatchPickup);
+                    currentPosition = aimedPosition;
+                }
+                break;
         }
     }
     
     public static void resetLift()
     {
-        if (limitSwitch1.get() && armMaster.getSelectedSensorPosition(0)<=-500)
+        if (limitSwitch1.get() && armMaster.getSelectedSensorPosition(0)<=-2700)
         {
             armMaster.set(ControlMode.PercentOutput,.6);
         }
-        else if (limitSwitch1.get() && armMaster.getSelectedSensorPosition(0)>=-500)
+        else if (limitSwitch1.get() && armMaster.getSelectedSensorPosition(0)>=-2700)
         {
-            armMaster.set(ControlMode.PercentOutput,.3);
+            armMaster.set(ControlMode.PercentOutput,.15);
         }
         else
         {

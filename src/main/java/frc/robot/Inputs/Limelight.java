@@ -29,7 +29,7 @@ public class Limelight
     }
     public static void lightOn()
     {
-        table.getEntry(Constants.camModeKey).setNumber(3);
+        table.getEntry(Constants.ledModeKey).setNumber(3);
     }
     public static void visionCam()
     {

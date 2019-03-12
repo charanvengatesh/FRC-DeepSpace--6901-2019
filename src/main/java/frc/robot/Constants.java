@@ -33,20 +33,21 @@ public class Constants {
   public static int limitSwitch2 = 1;
   /*** Robot Constants values ***/
   //Arm values:
-  public static int ball1 = -2280;
-  public static int ball2 = -4800;
-  public static int ball3 = -5700;
-  public static int hatch1 = -700;
-  public static int hatch2 = -3220;
-  public static int hatch3 = -5700;
+  public static int ball1 = -8700;
+  public static int ball2 = -17000;
+  public static int ball3 = -21000;
+  public static int hatch1 = -3150;
+  public static int hatch2 = -12000;
+  public static int hatch3 = -20700;
+  public static int hatchPickup =-1900; 
   //TODO: Configure the hatch up and down values
-  public static int hatchMovement = 375;
+  public static int hatchMovement = 1300;
   public static int wristUp = -500;
   public static int defaultPosition = 0;
   public static int maxPosition = 0;
   //Arm motion magic values:
-  public static int acceleration = 500;
-  public static int velocity = 200;
+  public static int acceleration = 1000;
+  public static int velocity = 1100;
   //Arm PIDF values:
   public static int armKp = 10;
   public static double armKi = .003;
@@ -61,11 +62,21 @@ public class Constants {
   public static String targetAreaKey = "ta";
   public static String camModeKey = "camMode";
   public static String ledModeKey = "ledMode";
-  public static double visionP = 0.0001;
+  public static double visionP = .8;
   public static double visionI = 0;
-  public static double minSpeedTurn = .5;
-  public static double minSpeedForward =0.5;
+  public static double visionD = 0;
+  public static double minSpeedTurn = .4;
+  public static double minSpeedForward =0.45;
   public static double maxSpeed = 1;
-  public static double threshold = 0;
-  public static double visionAreaP = 0;
+  public static double visionAreaP = 0.1;
+  //drivetrain constants
+  public static double driveAdjust =2; //proportional adjustment for driving straight
+  public static double targetArea = 3;
+  public static double turnDampen = .9;
+  public static double turnDefault = .65;
+  public static double turnFullSpeed = 1.2;
+  
+  public static double forwardDampen = .7;
+  public static double forwardDefault = .95;
+  public static double forwardFullSpeed = 1;
 }

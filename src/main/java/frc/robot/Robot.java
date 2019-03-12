@@ -12,14 +12,14 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 
+import java.util.Arrays;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-
-
-
+import frc.robot.Inputs.Limelight;
 import frc.robot.subsystems.*;
 
 /**
@@ -80,7 +80,7 @@ public class Robot extends TimedRobot
   @Override
   public void disabledInit()
   {
-    
+    //Limelight.lightsOff();
   }
 
   @Override
@@ -104,6 +104,7 @@ public class Robot extends TimedRobot
   public void autonomousInit()
   {
     VisionControl.resetController();
+    VisionControl.startControl();
     //Lift.initializeLift();
     // thing = 0;  
     // camera = new UsbCamera("camera","cam0");
@@ -120,16 +121,17 @@ public class Robot extends TimedRobot
   public void autonomousPeriodic()
   {
     Scheduler.getInstance().run();
-    VisionControl.center(0,0);
+    VisionControl.center(0.05,0.5);
 
     System.out.println(VisionControl.outputh);
-    DriveTrain.driveTrain.arcadeDrive(0,-VisionControl.outputh);
+    DriveTrain.driveTrain.arcadeDrive(-VisionControl.outputy,-VisionControl.outputh);
     
   }
     
   @Override
   public void teleopInit()
   {
+    VisionControl.startControl();
     Lift.initializeLift();
     Lift.wristMotor.set(ControlMode.PercentOutput,0);
         //armMotorMaster.setSelectedSensorPosition(0);
@@ -142,7 +144,7 @@ public class Robot extends TimedRobot
     {
       m_autonomousCommand.cancel();
     }
-    
+    DriveTrain.gyro.configFactoryDefault();    
   }
   
 
@@ -174,10 +176,16 @@ public class Robot extends TimedRobot
     //System.out.println(Lift.armMaster.getSelectedSensorPosition(0));
     Lift.setPosition();
     Lift.runArm();
+    //System.out.println(Lift.armMaster.getSelectedSensorVelocity(0));
     System.out.println(Lift.armMaster.getSelectedSensorPosition(0));
-    DriveTrain.customArcadeDriver();
-    DriveTrain.driveTrain.arcadeDrive(DriveTrain.forwardMagnitude, DriveTrain.turnMagnitude);
+    DriveTrain.updateDriveMode();
+    //System.out.println(DriveTrain.mode);
+    DriveTrain.drive();
+    //DriveTrain.customArcadeDriver();
+    //DriveTrain.driveTrain.arcadeDrive(DriveTrain.forwardMagnitude, DriveTrain.turnMagnitude);
     Intake.setIntake();
+    System.out.println(VisionControl.sumError);
+    //System.out.println(OI.controller1.getPOV());
   //  Lift.wristMotor.set(ControlMode.PercentOutput,OI.controller2.getY(Hand.kRight)*.5);
     
   }
@@ -189,12 +197,20 @@ public class Robot extends TimedRobot
   @Override
   public void testPeriodic()
   {
-
+    // System.out.println(OI.controller2.getPOV());
     // NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
     // NetworkTableEntry tx = table.getEntry("tx");
     // double x = tx.getDouble(0.0);
     // System.out.println(x);
-   
+    // VisionControl.startControl();
+    double[] yee = new double[3];
+    DriveTrain.updateDriveMode();
+    System.out.println(DriveTrain.error);
+    System.out.println(DriveTrain.turnMagnitude);
+    DriveTrain.drive();
+    //DriveTrain.gyro.getYawPitchRoll(yee);
+    //System.out.println(Arrays.toString((yee   )));
+    //DriveTrain.gyro.setYaw(0);
 
   }
 }
